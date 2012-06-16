@@ -13,9 +13,9 @@ requires = [
 ]
 
 setup(
-    name='heiro'
+    name='hiero'
     , version='0.0'
-    , description='heiro'
+    , description='hiero'
     , long_description=README + '\n\n' +  CHANGES
     , classifiers=[
         "Programming Language :: Python"
@@ -32,10 +32,10 @@ setup(
     , zip_safe=False
     , install_requires=requires
     , tests_require=requires
-    , test_suite="heiro"
+    , test_suite="hiero"
     , entry_points = """\
     [paste.app_factory]
-    main = heiro:main
+    main = hiero:main
     """
 )
 
