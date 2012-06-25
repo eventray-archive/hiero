@@ -11,6 +11,9 @@ requires = [
     , 'pyramid_debugtoolbar'
     , 'waitress'
     , 'horus'
+    ,'pyHAML'
+    ,'pyramid_haml'
+    ,'celementtree'
 ]
 
 setup(
@@ -37,6 +40,8 @@ setup(
     , entry_points = """\
     [paste.app_factory]
     main = hiero:main
+    [console_scripts]
+    initdb = hiero.scripts.initdb:main
     """
 )
 
