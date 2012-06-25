@@ -9,11 +9,13 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid'
     , 'pyramid_debugtoolbar'
+    , 'pyramid_tm'
     , 'waitress'
     , 'horus'
     ,'pyHAML'
     ,'pyramid_haml'
     ,'celementtree'
+    , 'sqlalchemy'
 ]
 
 setup(
