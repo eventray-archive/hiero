@@ -34,5 +34,5 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        test_page = Page('test page', "Test Page", "You are on the test page!", "custom", None, 2)
+        test_page = Page(u'test', u"Test Page", u"You are on the test page!", "custom", None, 2)
         DBSession.add(test_page)

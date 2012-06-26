@@ -1,0 +1,24 @@
+!!!
+%html(xmlns="http://www.w3.org/1999/xhtml")
+  %head
+    %title ${page.link_title}
+    %meta(httpEquiv="Content-Type", content="text/html;charset=UTF-8")
+    %meta(name="keywords", content="python web application")
+    %meta(name="description", content="pyramid web application")
+    -# %link(rel="shortcut icon", href="${request.static_url('tutorial:static/favicon.ico')}")
+    -# %link(rel="stylesheet", href="${request.static_url('tutorial:static/css/application.css')}", type="text/css", media="screen", charset="utf-8")
+
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/jquery-1.7.1.js')}", charset="utf-8")
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/underscore.js')}", charset="utf-8")
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/backbone.js')}", charset="utf-8")
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/jquery.pjax.js')}", charset="utf-8")
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/showdown.js')}", charset="utf-8")
+    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/application.js')}", charset="utf-8")
+    
+    -#![if lte IE 6]
+       %link(rel="stylesheet"
+          href="${request.static_url('tutorial:static/ie6.css')}"
+          type="text/css" media="screen" charset="utf-8")
+    -#![endif]
+  %body
+    ${self.body()}
