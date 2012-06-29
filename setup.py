@@ -12,8 +12,6 @@ requires = [
     , 'pyramid_tm'
     , 'waitress'
     , 'horus'
-    ,'pyHAML'
-    ,'pyramid_haml'
     ,'celementtree'
     , 'sqlalchemy'
 ]
