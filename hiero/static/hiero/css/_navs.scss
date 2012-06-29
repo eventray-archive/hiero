@@ -15,7 +15,8 @@
 }
 
 // Make links block level
-.nav > li > a {
+.nav > li > a, 
+.nav > li > span {
   display: block;
 }
 .nav > li > a:hover {
@@ -91,7 +92,8 @@
   float: left;
 }
 .nav-tabs > li > a,
-.nav-pills > li > a {
+.nav-pills > li > a,
+.nav-pills > li > span {
   padding-right: 12px;
   padding-left: 12px;
   margin-right: 2px;
@@ -135,7 +137,8 @@
 // -----
 
 // Links rendered as pills
-.nav-pills > li > a {
+.nav-pills > li > a, 
+.nav-pills > li > span {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-top: 2px;

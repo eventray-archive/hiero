@@ -23,42 +23,31 @@
       return $("#add_edit").show();
     });
     $("#save-button").click(function(e) {
-      var modal, original_link_title, save;
+      var modal, original_link_title;
       page = getPage();
       original_link_title = $(".page-link-title-original").val();
       console.log("lt: " + page.link_title);
       console.log("olt: " + original_link_title);
-      save = function(page, success_callback) {
-        console.log("saving ", page);
-        return $.ajax({
-          type: 'POST',
-          url: "/pages/" + original_link_title + "/edit",
-          data: page,
-          success: function(e) {
-            console.log("successful postback :)");
-            if (e.redirect_url != null) {
-              window.location.href = e.redirect_url;
-            }
-            if (success_callback != null) {
-              return success_callback(e);
-            }
-          },
-          dataType: "json"
-        });
-      };
       if (original_link_title != page.link_title) {
         console.log("link title changed");
         modal = $("#confirm-change-link-title-modal");
         modal.modal('show');
         return modal.find(".btn-primary").click(function(e) {
-          return save(page, function(e) {
+          return savePage(page, function(e) {
             return modal.modal('hide');
           });
         });
       } else {
-        return save(page);
+        return savePage(page);
       }
     });
+    window.setInterval(function(e) {
+      var original_link_title;
+      original_link_title = $(".page-link-title-original").val();
+      if (original_link_title === page.link_title) {
+        return savePage(getPage());
+      }
+    }, 5000);
     $(this).keydown(function(e) {
       return console.log("Keycode: " + e.keyCode);
     });
@@ -70,7 +59,13 @@
   });
 
   window.renderPage = function(page) {
-    $("#view").hide();
+    if (window.logged_in) {
+      $(".if-logged-in").show();
+      $(".if-not-logged-in").hide();
+    } else {
+      $(".if-logged-in").hide();
+      $(".if-not-logged-in").show();
+    }
     if (page.type === "custom") {
       $(".if-custom-page").show();
       return $(".if-not-custom-page").hide();
@@ -78,6 +73,30 @@
       $(".if-not-custom-page").show();
       return $(".if-custom-page").hide();
     }
+  };
+
+  window.savePage = function(page, success_callback) {
+    console.log("saving ", page);
+    return $.ajax({
+      type: 'POST',
+      url: "/pages/" + page.link_title_original + "/edit",
+      data: page,
+      success: function(e) {
+        var prettyTime;
+        console.log("successful postback :)");
+        if (e.redirect_url != null) {
+          window.location.href = e.redirect_url;
+        }
+        if (success_callback != null) {
+          success_callback(e);
+        }
+        prettyTime = (new XDate()).toString("dddd, h:mm:ss tt");
+        $(".page-last-saved-time").text("Page was last saved on " + prettyTime);
+        return {
+          dataType: "json"
+        };
+      }
+    });
   };
 
   window.setPage = function(data) {
@@ -92,6 +111,7 @@
   window.getPage = function() {
     var data;
     data = {
+      link_title_original: $("input.page-link-title-original").val(),
       link_title: $("input.page-link-title").val(),
       title: $("input.page-title").val(),
       subtitle: $("input.page-subtitle").val(),

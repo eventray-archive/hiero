@@ -3,6 +3,11 @@
 
 %%def(name="body()")
   %script
+    if('${logged_in}' === 'True') 
+      window.logged_in = true;
+    else
+      window.logged_in = false;
+
     function getPageDefaults() { 
       return {
         link_title:     "${page.link_title}",
@@ -14,17 +19,28 @@
       }
     }
 
-  #view
+  .subnav
+    %ul.nav.nav-pills.pull-right 
+      %li
+        %span.page-last-saved-time.if-logged-in
+      %li
+        %a#preview-button.if-not-custom-page Preview
+      %li
+        %a#cancel-button Cancel
+      %li
+        %a#save-button Save
+
+  #view.if-not-logged-in
     %h1.page-title
     %h2.page-subtitle
     .page-content
     .form-horizontal
       %fieldset
         .form-actions.pull-right
-          %button.btn.btn-primary#edit-button Edit
+          %button.btn.btn-primary#edit-button.if-logged-in 
+            Edit
 
-  #add_edit
-    .page-last-saved-time
+  #add_edit.if-logged-in
     .form-horizontal
       %fieldset
         %input.page-link-title-original(type="hidden")
@@ -56,11 +72,6 @@
             .controls
               #epiceditor
               -# %textarea.page-content(rows=18, cols=80)= page.content
-        .form-actions.pull-right
-          
-          %button.btn#preview-button.if-not-custom-page Preview
-          %button.btn#cancel-button Cancel
-          %button.btn#save-button.btn-primary Save
 
   #confirm-change-link-title-modal.modal.hide
     .modal-header
