@@ -16,6 +16,7 @@ requires = [
     ,'pyramid_haml'
     ,'celementtree'
     , 'sqlalchemy'
+    , 'psycopg2'
 ]
 
 setup(
