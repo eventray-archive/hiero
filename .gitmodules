@@ -1,0 +1,3 @@
+[submodule "hiero/static/EpicEditor"]
+	path = hiero/static/EpicEditor
+	url = git@github.com:pzatrick/EpicEditor

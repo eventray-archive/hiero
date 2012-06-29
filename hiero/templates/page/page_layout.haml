@@ -1,24 +1,29 @@
 !!!
 %html(xmlns="http://www.w3.org/1999/xhtml")
   %head
-    %title ${page.link_title}
+    %title= page.link_title
     %meta(httpEquiv="Content-Type", content="text/html;charset=UTF-8")
     %meta(name="keywords", content="python web application")
     %meta(name="description", content="pyramid web application")
-    -# %link(rel="shortcut icon", href="${request.static_url('tutorial:static/favicon.ico')}")
-    -# %link(rel="stylesheet", href="${request.static_url('tutorial:static/css/application.css')}", type="text/css", media="screen", charset="utf-8")
+    -# %link(rel="shortcut icon", href="${request.static_url('hiero:static/favicon.ico')}")
+    %link(rel="stylesheet", href="${request.static_url('hiero:static/hiero/css/page.css')}", type="text/css", media="screen", charset="utf-8")
 
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/jquery-1.7.1.js')}", charset="utf-8")
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/underscore.js')}", charset="utf-8")
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/backbone.js')}", charset="utf-8")
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/jquery.pjax.js')}", charset="utf-8")
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/showdown.js')}", charset="utf-8")
-    -# %script(type="text/javascript", src="${request.static_url('tutorial:static/js/application.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/jquery-1.7.1.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/underscore.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/backbone.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/jquery.pjax.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/EpicEditor/epiceditor/js/epiceditor.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/bootstrap-transition.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/bootstrap-modal.js')}", charset="utf-8")
+    %script(type="text/javascript", src="${request.static_url('hiero:static/hiero/js/page.js')}", charset="utf-8")
     
     -#![if lte IE 6]
        %link(rel="stylesheet"
-          href="${request.static_url('tutorial:static/ie6.css')}"
+          href="${request.static_url('hiero:static/ie6.css')}"
           type="text/css" media="screen" charset="utf-8")
     -#![endif]
   %body
     ${self.body()}
+
+
+

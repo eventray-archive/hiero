@@ -16,6 +16,7 @@ class Page(Base):
     type = Column(String)
     prev = Column(Integer)
     next = Column(Integer)
+    content = Column(UnicodeText)
 
     def __init__(self, link_title, title, subtitle, type, prev, next):
         self.link_title = link_title
@@ -24,3 +25,4 @@ class Page(Base):
         self.type = type
         self.prev = prev
         self.next = next
+        self.content = u""

@@ -1,0 +1,80 @@
+
+%%inherit(file="page_layout.haml")
+
+%%def(name="body()")
+  %script
+    function getPageDefaults() { 
+      return {
+        link_title:     "${page.link_title}",
+        new_link_title: "${page.link_title}",
+        title:          "${page.title}",
+        subtitle:       "${page.subtitle}",
+        type:           "${page.type}",
+        content:        "${page.content}"
+      }
+    }
+
+  #view
+    %h1.page-title
+    %h2.page-subtitle
+    .page-content
+    .form-horizontal
+      %fieldset
+        .form-actions.pull-right
+          %button.btn.btn-primary#edit-button Edit
+
+  #add_edit
+    .page-last-saved-time
+    .form-horizontal
+      %fieldset
+        %input.page-link-title-original(type="hidden")
+        .control-group
+          %label.control-label Link Title:
+          .controls
+            %input.page-link-title(type="text")
+            %p.help-block The title used in menus, links and the page's URL
+        .control-group
+          %label.control-label Page Type:
+          .controls
+            %select.page-type
+              %option(value="custom") Custom
+              %option(value="blog") Blog
+              %option(value="contact") Contact
+        .if-not-custom-page
+          .control-group
+            %label.control-label Title
+            .controls
+              %input.input-xlarge.page-title(value="${page.title}")
+          .control-group
+            %label.control-label Subtitle
+            .controls
+              %input.input-xlarge.page-subtitle(value="${page.subtitle}")
+        .if-custom-page
+          .control-group
+            %label.control-label 
+              %h1 ${page.link_title}: 
+            .controls
+              #epiceditor
+              -# %textarea.page-content(rows=18, cols=80)= page.content
+        .form-actions.pull-right
+          
+          %button.btn#preview-button.if-not-custom-page Preview
+          %button.btn#cancel-button Cancel
+          %button.btn#save-button.btn-primary Save
+
+  #confirm-change-link-title-modal.modal.hide
+    .modal-header
+      %button.close(dataDismiss="model") &times;
+      %h3 Confirm Changes.
+    .modal-body
+      If you change the link title, any URLs for this page already out there will need to be updated. Do you want to continue saving?
+    .modal-footer
+      %a.btn(href="#", dataDismiss="modal") Cancel
+      %a.btn.btn-primary(href="#") Continue
+    
+      
+
+
+
+
+
