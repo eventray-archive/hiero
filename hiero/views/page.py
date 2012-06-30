@@ -20,28 +20,55 @@ from ..models.page import (
     Page
     )
 
-@view_config (route_name='get_pages',    renderer='page/list.haml')
+def escapeNewlines(s):
+  return s.replace("\n", "\\n")
+
+@view_config (route_name='get_pages',    
+              renderer='json')
 def get_pages(request):
   pages = DBSession.query(Page).all()
-  return {
-      "pages": pages,
-      "logged_in": True
-      }
+  result = []
+  for page in pages:
+    result.append({
+      "id": page.id,
+      "link_title": page.link_title,
+      "url": request.route_url('get_page', link_title=page.link_title)
+      }) 
+  return result
 
 @view_config (route_name='get_page', 
               renderer='page/view_add_edit.haml')
 @view_config (route_name='edit_page',
               renderer='json')
-@view_config (route_name='add_page')
+@view_config (route_name='add_page',
+              renderer='json')
 @view_config (route_name='remove_page')
 def get_page (request):
+  route = request.matched_route.name
+  if route == "add_page":
+    page = Page(
+        "untitled",
+        "",
+        "",
+        "custom",
+        None,
+        None
+    )
+    with transaction.manager:
+      DBSession.add(page)
+
+    return {
+        "redirect_url": request.route_url('get_page', link_title="untitled")
+    }
+
+
   page_link_title = request.matchdict['link_title']
   print "page: "+page_link_title
   resultset = DBSession.query(Page).filter_by(link_title=page_link_title)
   if resultset.count() == 0L:
     return HTTPNotFound("There is no page called '"+page_link_title+"'. Sorry.")
   page = resultset.one()
-  if request.matched_route.name == "edit_page":
+  if route == "edit_page":
     print "editing page"
     params = request.params
     original_link_title = page.link_title
@@ -50,10 +77,11 @@ def get_page (request):
     page.title        = params[u"title"] 
     page.subtitle     = params[u"subtitle"]
     page.type         = params[u"type"]
-    page.content      = params[u"content"]
+    page.content      = escapeNewlines(params[u"content"])
     with transaction.manager:
       DBSession.add(page) 
     if original_link_title != params["link_title"]:
+      print "link_title changed"
       return dict(
           redirect_url=request.route_url('get_page', link_title=params["link_title"])
       )

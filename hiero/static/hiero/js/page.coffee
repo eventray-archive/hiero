@@ -1,9 +1,17 @@
 
-
+window.page_prev_content = null
 $(document).ready () ->
   console.log("here we go...")
+  jQuery.get("/pages", (pages) ->
+    for page in pages
+      $(".pages-nav-list").append("<li><a href='#{page.url}'>#{page.link_title}</a></li>")
+    $(".dropdown-toggle").dropdown()
+  )
+
   window.editor = new EpicEditor(
     basePath: "/static/EpicEditor/epiceditor"
+    file:
+      autoSave: 10000
   )
   editor.load()
   page = getPageDefaults()
@@ -12,40 +20,52 @@ $(document).ready () ->
   renderPage(page)
 
   # view event callbacks
-  $("#preview-button").click (e) ->
+  $(".page-link-title").change (e) ->
     page = getPage()
-    setPage(page)
-    $("#view").show()
-    $("#add_edit").hide()
-  $("#edit-button").click (e) ->
-    $("#view").hide()
-    $("#add_edit").show()
-  $("#save-button").click (e) ->
-    page = getPage()
+    console.log("link_title changed")
     original_link_title = $(".page-link-title-original").val()
-    console.log("lt: #{page.link_title}")
-    console.log("olt: #{original_link_title}")
-
-    # using backticks to interpolate javascript, there has to be a better way to do this in coffee
-    if `original_link_title != page.link_title`
-      console.log("link title changed")
+    if `original_link_title != page.link_title` # todo: no backticks
       modal = $("#confirm-change-link-title-modal")
       modal.modal('show')
-      modal.find(".btn-primary").click (e) ->
-        savePage(page, (e) ->
-            modal.modal('hide')
-        )
+      modal.find(".btn-confirm").click (e) ->
+        modal.modal('hide')
+      modal.find(".btn-cancel").click (e) ->
+        $("input.page-link-title").val(original_link_title)
+  $("#fullscreen-button").click (e) ->
+    editor.setFullscreen(true)
+
+  $("#preview-button").click (e) ->
+    page = getPage()
+    if page.type is "custom"
+      editor.preview()
     else
-      savePage(page)
-  window.setInterval(
-    (e) ->
-      original_link_title = $(".page-link-title-original").val()
-      if original_link_title == page.link_title
-        savePage(getPage())
-    5000
+      setPage(page)
+    $(".if-view-mode").show()
+    $(".if-edit-mode").hide()
+
+  $("#edit-button").click (e) ->
+    page = getPage()
+    if page.type is "custom"
+      editor.edit()
+    $(".if-view-mode").hide()
+    $(".if-edit-mode").show()
+
+  $("#save-button").click (e) ->
+    page = getPage()
+    console.log("saving link title as #{page.link_title}")
+    savePage(page)
+
+  $("#add-button").click (e) ->
+    jQuery.post("/add_page", null, (e) ->
+      window.location.href = e.redirect_url
+    )
+
+
+  editor.on("save", () ->
+    original_link_title = $(".page-link-title-original").val()
+    if original_link_title == page.link_title
+      savePage(getPage())
   )
-
-
 
   $(this).keydown (e) ->
     console.log("Keycode: #{e.keyCode}")
@@ -60,6 +80,7 @@ window.renderPage = (page) ->
   if window.logged_in
     $(".if-logged-in").show()
     $(".if-not-logged-in").hide()
+    $(".if-view-mode").hide()
   else
     $(".if-logged-in").hide()
     $(".if-not-logged-in").show()
@@ -72,14 +93,13 @@ window.renderPage = (page) ->
     $(".if-custom-page").hide()
 
 
+
 window.savePage = (page, success_callback) ->
-  console.log("saving ", page)
   $.ajax(
     type: 'POST'
     url:  "/pages/#{page.link_title_original}/edit"
     data: page
     success: (e) ->
-      console.log "successful postback :)"
       window.location.href = e.redirect_url if e.redirect_url?
       success_callback(e) if success_callback?
       prettyTime = (new XDate()).toString("dddd, h:mm:ss tt")
@@ -93,7 +113,8 @@ window.setPage = (data) ->
   $(".page-title").val(data.title).text(data.title)
   $(".page-subtitle").val(data.subtitle).text(data.subtitle)
   $(".page-type").val(data.type)
-  editor.setContents(data.content)
+  $(".page-content").html(marked(data.content))
+  editor.setText(data.content)
   return undefined
 
 window.getPage = () ->
@@ -104,5 +125,5 @@ window.getPage = () ->
     title:           $("input.page-title").val()
     subtitle:        $("input.page-subtitle").val()
     type:            $("select.page-type").val()
-    content:        editor.getContents()
+    content:        editor.getText()
   return data

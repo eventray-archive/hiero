@@ -2,6 +2,7 @@
 %%inherit(file="page_layout.haml")
 
 %%def(name="body()")
+ 
   %script
     if('${logged_in}' === 'True') 
       window.logged_in = true;
@@ -23,24 +24,37 @@
     %ul.nav.nav-pills.pull-right 
       %li
         %span.page-last-saved-time.if-logged-in
-      %li
-        %a#preview-button.if-not-custom-page Preview
-      %li
-        %a#cancel-button Cancel
-      %li
-        %a#save-button Save
 
-  #view.if-not-logged-in
-    %h1.page-title
-    %h2.page-subtitle
+      %li.dropdown
+        %a.dropdown-toggle(dataToggle="dropdown") 
+          Pages
+          %b.caret
+        %ul.pages-nav-list.dropdown-menu
+          %li
+            %a#add-button(href="#") New Page
+          %li.divider
+          
+      %li
+        %a#preview-button.if-edit-mode 
+          Preview
+      %li
+        %a#fullscreen-button.if-custom-page.if-edit-mode
+          Fullscreen
+      -# %li
+      -#   %a#cancel-button(href="/pages") Cancel
+      %li.active
+        %a#save-button.if-edit-mode
+          Save
+      %li.active
+        %a#edit-button.if-logged-in.if-view-mode
+          Edit
+
+  .if-view-mode.if-not-logged-in
+    %h1.page-title.if-not-custom-page
+    %h2.page-subtitle.if-not-custom-page
     .page-content
-    .form-horizontal
-      %fieldset
-        .form-actions.pull-right
-          %button.btn.btn-primary#edit-button.if-logged-in 
-            Edit
 
-  #add_edit.if-logged-in
+  .if-edit-mode.if-logged-in
     .form-horizontal
       %fieldset
         %input.page-link-title-original(type="hidden")
@@ -80,8 +94,8 @@
     .modal-body
       If you change the link title, any URLs for this page already out there will need to be updated. Do you want to continue saving?
     .modal-footer
-      %a.btn(href="#", dataDismiss="modal") Cancel
-      %a.btn.btn-primary(href="#") Continue
+      %a.btn.btn-cancel(href="#", dataDismiss="modal") Nevermind!
+      %a.btn.btn-primary.btn-confirm(href="#") No big deal.
     
       
 
