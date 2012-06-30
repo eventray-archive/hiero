@@ -23,6 +23,11 @@ from ..models.page import (
 def escapeNewlines(s):
   return s.replace("\n", "\\n")
 
+@view_config (route_name='home',
+              renderer='string')
+def home(request):
+  return "Welcome home, son!"
+
 @view_config (route_name='get_pages',    
               renderer='json')
 def get_pages(request):
@@ -42,12 +47,19 @@ def get_pages(request):
               renderer='json')
 @view_config (route_name='add_page',
               renderer='json')
-@view_config (route_name='remove_page')
+@view_config (route_name='remove_page',
+              renderer='json')
 def get_page (request):
+
   route = request.matched_route.name
   if route == "add_page":
+    untitled_number = 1
+    def link_title():
+      return "untitled_"+str(untitled_number)
+    while DBSession.query(Page).filter_by(link_title=link_title()).count() != 0L:
+      untitled_number += 1
     page = Page(
-        "untitled",
+        link_title(),
         "",
         "",
         "custom",
@@ -58,8 +70,9 @@ def get_page (request):
       DBSession.add(page)
 
     return {
-        "redirect_url": request.route_url('get_page', link_title="untitled")
+        "redirect_url": request.route_url('get_page', link_title=link_title())
     }
+
 
 
   page_link_title = request.matchdict['link_title']
@@ -68,6 +81,12 @@ def get_page (request):
   if resultset.count() == 0L:
     return HTTPNotFound("There is no page called '"+page_link_title+"'. Sorry.")
   page = resultset.one()
+  if route == "remove_page":
+    with transaction.manager:
+      DBSession.delete(page)
+    return {
+        "redirect_url": request.route_url('home')
+        }
   if route == "edit_page":
     print "editing page"
     params = request.params

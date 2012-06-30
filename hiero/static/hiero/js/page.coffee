@@ -2,11 +2,13 @@
 window.page_prev_content = null
 $(document).ready () ->
   console.log("here we go...")
-  jQuery.get("/pages", (pages) ->
-    for page in pages
-      $(".pages-nav-list").append("<li><a href='#{page.url}'>#{page.link_title}</a></li>")
-    $(".dropdown-toggle").dropdown()
-  )
+  buildPagesMenu()
+  $(".dropdown-toggle").dropdown()
+  # jQuery.get("/pages", (pages) ->
+  #   for page in pages
+  #     $(".pages-nav-list").append("<li><a href='#{page.url}'>#{page.link_title}</a></li>")
+  #   $(".dropdown-toggle").dropdown()
+  # )
 
   window.editor = new EpicEditor(
     basePath: "/static/EpicEditor/epiceditor"
@@ -27,9 +29,13 @@ $(document).ready () ->
     if `original_link_title != page.link_title` # todo: no backticks
       modal = $("#confirm-change-link-title-modal")
       modal.modal('show')
+      window.auto_save_okay = false
       modal.find(".btn-confirm").click (e) ->
+        window.auto_save_okay = true
         modal.modal('hide')
       modal.find(".btn-cancel").click (e) ->
+        window.auto_save_okay = true
+        modal.modal('hide')
         $("input.page-link-title").val(original_link_title)
   $("#fullscreen-button").click (e) ->
     editor.setFullscreen(true)
@@ -60,10 +66,28 @@ $(document).ready () ->
       window.location.href = e.redirect_url
     )
 
+  $("#remove-button").click (e) ->
+    modal = $("#confirm-delete-modal")
+    modal.modal('show')
+
+    modal.find(".btn-confirm").click (e) ->
+      window.auto_save_okay = false
+      modal.modal('hide')
+      original_link_title = $(".page-link-title-original").val()
+      jQuery.post("/pages/#{original_link_title}/remove", null, (e) ->
+        window.location.href = e.redirect_url
+      )
+      
+    modal.find(".btn-cancel").click (e) ->
+      window.auto_save_okay = true
+      modal.modal('hide')
+      $("input.page-link-title").val(original_link_title)
+      
 
   editor.on("save", () ->
     original_link_title = $(".page-link-title-original").val()
-    if original_link_title == page.link_title
+    # if original_link_title == page.link_title
+    if auto_save_okay
       savePage(getPage())
   )
 
@@ -93,7 +117,14 @@ window.renderPage = (page) ->
     $(".if-custom-page").hide()
 
 
+window.buildPagesMenu = () ->
+  $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>")
+  jQuery.get("/pages", (pages) ->
+    for page in pages
+      $(".pages-nav-list").append("<li><a href='#{page.url}'>#{page.link_title}</a></li>")
+  )
 
+window.auto_save_okay = true
 window.savePage = (page, success_callback) ->
   $.ajax(
     type: 'POST'

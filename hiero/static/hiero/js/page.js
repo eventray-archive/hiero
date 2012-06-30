@@ -6,14 +6,8 @@
   $(document).ready(function() {
     var page;
     console.log("here we go...");
-    jQuery.get("/pages", function(pages) {
-      var page, _i, _len;
-      for (_i = 0, _len = pages.length; _i < _len; _i++) {
-        page = pages[_i];
-        $(".pages-nav-list").append("<li><a href='" + page.url + "'>" + page.link_title + "</a></li>");
-      }
-      return $(".dropdown-toggle").dropdown();
-    });
+    buildPagesMenu();
+    $(".dropdown-toggle").dropdown();
     window.editor = new EpicEditor({
       basePath: "/static/EpicEditor/epiceditor",
       file: {
@@ -33,10 +27,14 @@
       if (original_link_title != page.link_title) {
         modal = $("#confirm-change-link-title-modal");
         modal.modal('show');
+        window.auto_save_okay = false;
         modal.find(".btn-confirm").click(function(e) {
+          window.auto_save_okay = true;
           return modal.modal('hide');
         });
         return modal.find(".btn-cancel").click(function(e) {
+          window.auto_save_okay = true;
+          modal.modal('hide');
           return $("input.page-link-title").val(original_link_title);
         });
       }
@@ -72,10 +70,29 @@
         return window.location.href = e.redirect_url;
       });
     });
+    $("#remove-button").click(function(e) {
+      var modal;
+      modal = $("#confirm-delete-modal");
+      modal.modal('show');
+      modal.find(".btn-confirm").click(function(e) {
+        var original_link_title;
+        window.auto_save_okay = false;
+        modal.modal('hide');
+        original_link_title = $(".page-link-title-original").val();
+        return jQuery.post("/pages/" + original_link_title + "/remove", null, function(e) {
+          return window.location.href = e.redirect_url;
+        });
+      });
+      return modal.find(".btn-cancel").click(function(e) {
+        window.auto_save_okay = true;
+        modal.modal('hide');
+        return $("input.page-link-title").val(original_link_title);
+      });
+    });
     editor.on("save", function() {
       var original_link_title;
       original_link_title = $(".page-link-title-original").val();
-      if (original_link_title === page.link_title) {
+      if (auto_save_okay) {
         return savePage(getPage());
       }
     });
@@ -106,6 +123,21 @@
       return $(".if-custom-page").hide();
     }
   };
+
+  window.buildPagesMenu = function() {
+    $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>");
+    return jQuery.get("/pages", function(pages) {
+      var page, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = pages.length; _i < _len; _i++) {
+        page = pages[_i];
+        _results.push($(".pages-nav-list").append("<li><a href='" + page.url + "'>" + page.link_title + "</a></li>"));
+      }
+      return _results;
+    });
+  };
+
+  window.auto_save_okay = true;
 
   window.savePage = function(page, success_callback) {
     return $.ajax({

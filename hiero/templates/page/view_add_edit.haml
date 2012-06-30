@@ -21,11 +21,25 @@
     }
 
   .subnav
-    %ul.nav.nav-pills.pull-right 
-      %li
-        %span.page-last-saved-time.if-logged-in
+    %ul.nav.nav-pills
+      %li.active.pull-right
+        %a#save-button.if-edit-mode
+          Save
+      %li.active.pull-right
+        %a#edit-button.if-logged-in.if-view-mode
+          Edit
+      %li.pull-right
+        %a#remove-button
+          Delete
+          
+      %li.pull-right
+        %a#preview-button.if-edit-mode 
+          Preview
+      %li.pull-right
+        %a#fullscreen-button.if-custom-page.if-edit-mode
+          Fullscreen
 
-      %li.dropdown
+      %li.dropdown.pull-right
         %a.dropdown-toggle(dataToggle="dropdown") 
           Pages
           %b.caret
@@ -33,21 +47,8 @@
           %li
             %a#add-button(href="#") New Page
           %li.divider
-          
-      %li
-        %a#preview-button.if-edit-mode 
-          Preview
-      %li
-        %a#fullscreen-button.if-custom-page.if-edit-mode
-          Fullscreen
-      -# %li
-      -#   %a#cancel-button(href="/pages") Cancel
-      %li.active
-        %a#save-button.if-edit-mode
-          Save
-      %li.active
-        %a#edit-button.if-logged-in.if-view-mode
-          Edit
+      %li.pull-right
+        %span.page-last-saved-time.if-logged-in
 
   .if-view-mode.if-not-logged-in
     %h1.page-title.if-not-custom-page
@@ -94,10 +95,19 @@
     .modal-body
       If you change the link title, any URLs for this page already out there will need to be updated. Do you want to continue saving?
     .modal-footer
-      %a.btn.btn-cancel(href="#", dataDismiss="modal") Nevermind!
+      %a.btn.btn-cancel(href="#") Nevermind!
       %a.btn.btn-primary.btn-confirm(href="#") No big deal.
     
       
+  #confirm-delete-modal.modal.hide
+    .modal-header
+      %button.close(dataDismiss="model") &times;
+      %h3 Confirm Deletion
+    .modal-body
+      Sure you want to delete this page?
+    .modal-footer
+      %a.btn.btn-cancel(href="#") Nevermind
+      %a.btn.btn-primary.btn-confirm(href="#") Do it!
 
 
 
