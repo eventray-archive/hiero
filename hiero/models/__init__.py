@@ -1,12 +1,35 @@
+from horus.lib                  import pluralize
+from sqlalchemy.ext.declarative import declared_attr
 
-from sqlalchemy.ext.declarative import declarative_base
+import horus.models
+import sqlalchemy as sa
 
-from sqlalchemy.orm import (
-    scoped_session,
-    sessionmaker,
-    )
+ENTRY_TAG_TABLE_NAME = 'entry_tag'
+ENTRY_TAG_ASSOCIATION_TABLE_NAME = 'entry_tag_association'
+ENTRY_TABLE_NAME = 'entry'
+SERIES_TABLE_NAME = 'series'
 
-from zope.sqlalchemy import ZopeTransactionExtension
 
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
+# These are the horus mod extensions
+class BaseModel(horus.models.BaseModel):
+    pass
+
+class UserMixin(horus.models.UserMixin):
+    @declared_attr
+    def entries(self):
+        return sa.orm.relationship(
+            'Entry'
+            , secondary=ENTRY_TABLE_NAME
+            , passive_deletes=True
+            , passive_updates=True
+            , backref=pluralize(UserMixin.__tablename__)
+        )
+
+class GroupMixin(horus.models.GroupMixin):
+    pass
+
+class UserGroupMixin(horus.models.UserGroupMixin):
+    pass
+
+class ActivationMixin(horus.models.ActivationMixin):
+    pass
