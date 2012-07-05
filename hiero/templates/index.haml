@@ -1,0 +1,22 @@
+%%inherit(file="app_layout.haml")
+
+%%def(name="body()")
+  %script
+    if('${logged_in}' === 'True') 
+      window.logged_in = true;
+    else
+      window.logged_in = false;
+
+  .subnav.if-logged-in
+    %ul.nav.nav-pills
+      %li.dropdown.pull-right
+        %a.dropdown-toggle(dataToggle="dropdown") 
+          Pages
+          %b.caret
+        %ul.pages-nav-list.dropdown-menu
+          %li
+            %a#add-button(href="#") New Page
+          %li.divider
+
+  .subnav.if-not-logged-in
+    %ul.nav.nav-pills.pages-nav-list

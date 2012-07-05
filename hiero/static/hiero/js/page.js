@@ -6,7 +6,6 @@
   $(document).ready(function() {
     var page;
     console.log("here we go...");
-    buildPagesMenu();
     $(".dropdown-toggle").dropdown();
     window.editor = new EpicEditor({
       basePath: "/static/EpicEditor/epiceditor",
@@ -107,14 +106,6 @@
   });
 
   window.renderPage = function(page) {
-    if (window.logged_in) {
-      $(".if-logged-in").show();
-      $(".if-not-logged-in").hide();
-      $(".if-view-mode").hide();
-    } else {
-      $(".if-logged-in").hide();
-      $(".if-not-logged-in").show();
-    }
     if (page.type === "custom") {
       $(".if-custom-page").show();
       return $(".if-not-custom-page").hide();
@@ -122,19 +113,6 @@
       $(".if-not-custom-page").show();
       return $(".if-custom-page").hide();
     }
-  };
-
-  window.buildPagesMenu = function() {
-    $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>");
-    return jQuery.get("/pages", function(pages) {
-      var page, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = pages.length; _i < _len; _i++) {
-        page = pages[_i];
-        _results.push($(".pages-nav-list").append("<li><a href='" + page.url + "'>" + page.link_title + "</a></li>"));
-      }
-      return _results;
-    });
   };
 
   window.auto_save_okay = true;

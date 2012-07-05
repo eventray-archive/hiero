@@ -1,4 +1,3 @@
-
 %%inherit(file="page_layout.haml")
 
 %%def(name="body()")
@@ -20,13 +19,13 @@
       }
     }
 
-  .subnav
+  .subnav.if-logged-in
     %ul.nav.nav-pills
       %li.active.pull-right
         %a#save-button.if-edit-mode
           Save
       %li.active.pull-right
-        %a#edit-button.if-logged-in.if-view-mode
+        %a#edit-button.if-view-mode
           Edit
       %li.pull-right
         %a#remove-button
@@ -45,10 +44,13 @@
           %b.caret
         %ul.pages-nav-list.dropdown-menu
           %li
-            %a#add-button(href="#") New Page
+            %a#add-button New Page
           %li.divider
       %li.pull-right
-        %span.page-last-saved-time.if-logged-in
+        %span.page-last-saved-time
+
+  .subnav.if-not-logged-in
+    %ul.nav.nav-pills.pages-nav-list
 
   .if-view-mode.if-not-logged-in
     %h1.page-title.if-not-custom-page

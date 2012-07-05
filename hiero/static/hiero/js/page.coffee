@@ -2,7 +2,6 @@
 window.page_prev_content = null
 $(document).ready () ->
   console.log("here we go...")
-  buildPagesMenu()
   $(".dropdown-toggle").dropdown()
   # jQuery.get("/pages", (pages) ->
   #   for page in pages
@@ -101,28 +100,12 @@ $(document).ready () ->
 
 
 window.renderPage = (page) ->
-  if window.logged_in
-    $(".if-logged-in").show()
-    $(".if-not-logged-in").hide()
-    $(".if-view-mode").hide()
-  else
-    $(".if-logged-in").hide()
-    $(".if-not-logged-in").show()
-
   if page.type is "custom"
     $(".if-custom-page").show()
     $(".if-not-custom-page").hide()
   else
     $(".if-not-custom-page").show()
     $(".if-custom-page").hide()
-
-
-window.buildPagesMenu = () ->
-  $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>")
-  jQuery.get("/pages", (pages) ->
-    for page in pages
-      $(".pages-nav-list").append("<li><a href='#{page.url}'>#{page.link_title}</a></li>")
-  )
 
 window.auto_save_okay = true
 window.savePage = (page, success_callback) ->

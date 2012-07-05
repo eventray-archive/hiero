@@ -23,10 +23,15 @@ from ..models.page import (
 def escapeNewlines(s):
   return s.replace("\n", "\\n")
 
+
+
+
 @view_config (route_name='home',
-              renderer='string')
+              renderer='index.haml')
 def home(request):
-  return "Welcome home, son!"
+  return {
+      "logged_in": True
+      }
 
 @view_config (route_name='get_pages',    
               renderer='json')
