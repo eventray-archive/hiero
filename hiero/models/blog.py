@@ -1,5 +1,6 @@
 from hiero.models               import BaseModel
 from hiero.models               import UserMixin
+from hiero.models               import ENTRY_ASSOCIATION_TABLE_NAME
 from hiero.models               import ENTRY_TAG_TABLE_NAME
 from hiero.models               import ENTRY_TABLE_NAME
 from hiero.models               import SERIES_TABLE_NAME
@@ -9,6 +10,31 @@ from horus.lib                  import pluralize
 from sqlalchemy.ext.declarative import declared_attr
 
 import sqlalchemy as sa
+
+class EntryAssociationMixin(BaseModel):
+    @declared_attr
+    def __tablename__(cls):
+        return ENTRY_ASSOCIATION_TABLE_NAME
+
+    @declared_attr
+    def parent_entry_pk(self):
+        return sa.Column(sa.Integer
+                , sa.ForeignKey('%s.pk' % ENTRY_TABLE_NAME
+                    , onupdate='CASCADE'
+                    , ondelete='CASCADE'
+                )
+                , primary_key=True
+        )
+
+    @declared_attr
+    def related_entry_pk(self):
+        return sa.Column(sa.Integer
+                , sa.ForeignKey('%s.pk' % ENTRY_TABLE_NAME
+                    , onupdate='CASCADE'
+                    , ondelete='CASCADE'
+                )
+                , primary_key=True
+        )
 
 class EntryTagMixin(BaseModel):
     @declared_attr
@@ -45,15 +71,15 @@ class TagMixin(BaseModel):
         """ Unique title for the tag """
         return sa.Column(sa.Unicode(30), nullable=False, unique=True)
 
-    @declared_attr
-    def entries(self):
-        return sa.orm.relationship(
-            'Entry'
-            , secondary=ENTRY_TABLE_NAME
-            , passive_deletes=True
-            , passive_updates=True
-            , backref=pluralize(TagMixin.__tablename__)
-        )
+#    @declared_attr
+#    def entries(self):
+#        return sa.orm.relationship(
+#            'Entry'
+#            , secondary=ENTRY_TABLE_NAME
+#            , passive_deletes=True
+#            , passive_updates=True
+#            , backref=pluralize(TagMixin.__tablename__)
+#        )
 
 class CategoryMixin(BaseModel):
     @declared_attr
@@ -61,25 +87,17 @@ class CategoryMixin(BaseModel):
         """ Unique title for the category """
         return sa.Column(sa.Unicode(30), nullable=False, unique=True)
 
-    @declared_attr
-    def entries(self):
-        return sa.orm.relationship(
-            'Entry'
-            , secondary=ENTRY_TABLE_NAME
-            , passive_deletes=True
-            , passive_updates=True
-            , backref=pluralize(CategoryMixin.__tablename__)
-        )
+#    @declared_attr
+#    def entries(self):
+#        return sa.orm.relationship(
+#            'Entry'
+#            , secondary=ENTRY_TABLE_NAME
+#            , passive_deletes=True
+#            , passive_updates=True
+#            , backref=pluralize(CategoryMixin.__tablename__)
+#        )
 
-# Entry
-    # The blog post itself
-    # owner, series, is_featured, title, creator_ip, is_draft,
-   # allow_comments,
-    # slug, content, html_content, markup type, category, 
-#tags, created_on,
-    # related_entries
-
-    # SEO stuff - keywords, description
+# markup type
 class EntryMixin(BaseModel):
     @declared_attr
     def __tablename__(cls):
@@ -88,8 +106,9 @@ class EntryMixin(BaseModel):
     @declared_attr
     def owner_pk(self):
         return sa.Column(
-            sa.Integer,
-            sa.ForeignKey('%s.pk' % UserMixin.__tablename__)
+            sa.Integer
+            , sa.ForeignKey('%s.pk' % UserMixin.__tablename__)
+            , nullable=False
         )
 
     @declared_attr
@@ -97,6 +116,13 @@ class EntryMixin(BaseModel):
         return sa.Column(
             sa.Integer,
             sa.ForeignKey('%s.pk' % SERIES_TABLE_NAME)
+        )
+
+    @declared_attr
+    def category_pk(self):
+        return sa.Column(
+            sa.Integer
+            , sa.ForeignKey('%s.pk' % CategoryMixin.__tablename__)
         )
 
     @declared_attr
@@ -134,6 +160,30 @@ class EntryMixin(BaseModel):
         """ Unique title for the entry """
         return sa.Column(sa.Unicode(30), nullable=False, unique=True)
 
+    @declared_attr
+    def created_on(self):
+        """ Date the entry was created """
+        return sa.Column(sa.TIMESTAMP(timezone=False),
+            default=sa.sql.func.now(),
+            server_default=sa.func.now()
+        )
+
+    @declared_attr
+    def published_on(self):
+        """ Date the entry was published """
+        return sa.Column(sa.TIMESTAMP(timezone=False))
+
+#    @declared_attr
+#    def related_entries(self):
+#        return sa.orm.relationship(
+#            'Entry'
+#            , secondary=ENTRY_ASSOCIATION_TABLE_NAME
+#            , passive_deletes=True
+#            , passive_updates=True
+#            , backref=pluralize(ENTRY_TABLE_NAME)
+#        )
+#
+
 class SeriesMixin(BaseModel):
     """ This represents a series of blog entries, such a 6 entry 
     series on debugging python
@@ -151,13 +201,13 @@ class SeriesMixin(BaseModel):
     def description(self):
         return sa.Column(sa.UnicodeText())
 
-    @declared_attr
-    def entries(self):
-        """ relationship for entries belonging to this series """
-        return sa.orm.relationship(
-            'Entry'
-            , secondary=ENTRY_TABLE_NAME
-            , passive_deletes=True
-            , passive_updates=True
-            , backref=pluralize(SERIES_TABLE_NAME)
-        )
+#    @declared_attr
+#    def entries(self):
+#        """ relationship for entries belonging to this series """
+#        return sa.orm.relationship(
+#            'Entry'
+#            , secondary=ENTRY_TABLE_NAME
+#            , passive_deletes=True
+#            , passive_updates=True
+#            , backref=pluralize(SERIES_TABLE_NAME)
+#        )
