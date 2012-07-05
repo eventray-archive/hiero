@@ -1,4 +1,4 @@
-from horus.lib                  import pluralize
+from hem.text                   import pluralize
 from sqlalchemy.ext.declarative import declared_attr
 
 import horus.models
