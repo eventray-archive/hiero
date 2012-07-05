@@ -14,6 +14,7 @@ import unittest
 
 settings = appconfig('config:' + resource_filename(__name__, 'test.ini'))
 
+
 class BaseTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
