@@ -1,4 +1,6 @@
 def includeme(config):
+    config.add_route('hiero_entry_index',   '/')
+    config.add_route('hiero_entry_detail',   '/')
     config.add_route('get_pages',   '/pages') 
     config.add_route('get_page',    '/pages/{link_title}')
     config.add_route('edit_page',   '/pages/{link_title}/edit')

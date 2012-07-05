@@ -5,8 +5,7 @@ from hiero.models               import ENTRY_TAG_TABLE_NAME
 from hiero.models               import ENTRY_TABLE_NAME
 from hiero.models               import SERIES_TABLE_NAME
 from hiero.models               import ENTRY_TAG_ASSOCIATION_TABLE_NAME
-from horus.lib                  import pluralize
-
+from hem.db                     import get_session
 from sqlalchemy.ext.declarative import declared_attr
 
 import sqlalchemy as sa
@@ -183,6 +182,25 @@ class EntryMixin(BaseModel):
 #            , backref=pluralize(ENTRY_TABLE_NAME)
 #        )
 #
+    @classmethod
+    def get_all_active(cls, request, page=1, limit=10):
+        """Gets all active entries"""
+        session = get_session(request)
+
+        query = session.query(cls).filter(cls.is_published == True)
+        query = query.limit(limit)
+
+        if page > 1:
+            query.offset(page * limit)
+
+        return query
+
+    @classmethod
+    def get_by_slug(cls, request, slug):
+        """Gets all active entries"""
+        session = get_session(request)
+
+        return session.query(cls).filter(cls.slug == slug)
 
 class SeriesMixin(BaseModel):
     """ This represents a series of blog entries, such a 6 entry 
