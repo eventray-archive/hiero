@@ -60,10 +60,6 @@ $(document).ready () ->
     console.log("saving link title as #{page.link_title}")
     savePage(page)
 
-  $("#add-button").click (e) ->
-    jQuery.post("/add_page", null, (e) ->
-      window.location.href = e.redirect_url
-    )
 
   $("#remove-button").click (e) ->
     modal = $("#confirm-delete-modal")

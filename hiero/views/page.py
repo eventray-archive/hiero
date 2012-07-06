@@ -25,9 +25,8 @@ def escapeNewlines(s):
 
 
 
-
 @view_config (route_name='home',
-              renderer='index.haml')
+              renderer='index.mako')
 def home(request):
   return {
       "logged_in": True
@@ -47,7 +46,7 @@ def get_pages(request):
   return result
 
 @view_config (route_name='get_page', 
-              renderer='page/view_add_edit.haml')
+              renderer='page/view_add_edit.mako')
 @view_config (route_name='edit_page',
               renderer='json')
 @view_config (route_name='add_page',

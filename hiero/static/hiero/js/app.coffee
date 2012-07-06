@@ -6,9 +6,14 @@ $(document).ready () ->
   buildPagesMenu(options)
   render(options)
 
+  $("#add-page-button").click (e) ->
+    jQuery.post("/add_page", null, (e) ->
+      window.location.href = e.redirect_url
+    )
+
 window.buildPagesMenu = (options) ->
   if options.logged_in
-    $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>")
+    $(".pages-nav-list").html("<li><a id='add-page-button'>New Page</a></li><li class='divider'></li>")
 
   jQuery.get("/pages", (pages) ->
     for page in pages

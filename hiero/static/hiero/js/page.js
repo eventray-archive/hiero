@@ -64,11 +64,6 @@
       console.log("saving link title as " + page.link_title);
       return savePage(page);
     });
-    $("#add-button").click(function(e) {
-      return jQuery.post("/add_page", null, function(e) {
-        return window.location.href = e.redirect_url;
-      });
-    });
     $("#remove-button").click(function(e) {
       var modal;
       modal = $("#confirm-delete-modal");

@@ -8,12 +8,17 @@
       logged_in: window.logged_in
     };
     buildPagesMenu(options);
-    return render(options);
+    render(options);
+    return $("#add-page-button").click(function(e) {
+      return jQuery.post("/add_page", null, function(e) {
+        return window.location.href = e.redirect_url;
+      });
+    });
   });
 
   window.buildPagesMenu = function(options) {
     if (options.logged_in) {
-      $(".pages-nav-list").html("<li><a id='add-button'>New Page</a></li><li class='divider'></li>");
+      $(".pages-nav-list").html("<li><a id='add-page-button'>New Page</a></li><li class='divider'></li>");
     }
     return jQuery.get("/pages", function(pages) {
       var page, _i, _len, _results;
