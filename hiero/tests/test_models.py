@@ -134,4 +134,43 @@ class TestEntry(BaseTestCase):
         assert series.entries[2] == entry3
         assert series.slug == 'test-series'
 
+    def test_entry_category(self):
+        from hiero.tests.models import User
+        from hiero.tests.models import Entry
+        from hiero.tests.models import Category
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry2 = Entry(owner=owner, title='test entry 1', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry3 = Entry(owner=owner, title='test entry 2', content='hi',
+            html_content='hi<br />'
+        )
+
+        category = Category(title='test category')
+        category.entries.append(entry)
+        category.entries.append(entry2)
+        category.entries.append(entry3)
+
+
+        self.session.add(category)
+
+        self.session.flush()
+
+        assert entry.category == category
+        assert len(category.entries) == 3
+        assert category.entries[0] == entry
+        assert category.entries[1] == entry2
+        assert category.entries[2] == entry3
+        assert category.slug == 'test-category'
+
+
+
 

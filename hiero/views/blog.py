@@ -17,7 +17,7 @@ class EntryController(object):
         page = self.request.matchdict.get('page', 1)
 
         query = self.Entry.get_all_active(self.request, page=page)
-        return {'entries': query.all() }
+        return {'entries': query.all()}
 
     @view_config(
         route_name='hiero_entry_detail'

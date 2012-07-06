@@ -78,15 +78,25 @@ class CategoryMixin(BaseModel):
         """ Unique title for the category """
         return sa.Column(sa.Unicode(128), nullable=False, unique=True)
 
-#    @declared_attr
-#    def entries(self):
-#        return sa.orm.relationship(
-#            'Entry'
-#            , secondary=ENTRY_TABLE_NAME
-#            , passive_deletes=True
-#            , passive_updates=True
-#            , backref=pluralize(CategoryMixin.__tablename__)
-#        )
+    @declared_attr
+    def slug(self):
+        """ Unique url for the category """
+        def slug_title(context):
+            title = context.current_parameters['title']
+
+            if title:
+                return slugify(title)
+            else:
+                #TODO: need to raise IntegrityError here
+                pass
+
+        return sa.Column(
+            sa.Unicode(128)
+            , nullable=False
+            , unique=True
+            , default=slug_title
+        )
+
 
 # markup type
 class EntryMixin(BaseModel):
@@ -128,6 +138,13 @@ class EntryMixin(BaseModel):
         return sa.Column(
             sa.Integer
             , sa.ForeignKey('%s.pk' % CategoryMixin.__tablename__)
+        )
+
+    @declared_attr
+    def category(self):
+        return sa.orm.relationship(
+            'Category'
+            , backref=pluralize(ENTRY_TABLE_NAME)
         )
 
     @declared_attr
