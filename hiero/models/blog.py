@@ -70,13 +70,13 @@ class TagMixin(BaseModel):
     @declared_attr
     def title(self):
         """ Unique title for the tag """
-        return sa.Column(sa.Unicode(30), nullable=False, unique=True)
+        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
 
 class CategoryMixin(BaseModel):
     @declared_attr
     def title(self):
         """ Unique title for the category """
-        return sa.Column(sa.Unicode(30), nullable=False, unique=True)
+        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
 
 #    @declared_attr
 #    def entries(self):
@@ -114,6 +114,13 @@ class EntryMixin(BaseModel):
         return sa.Column(
             sa.Integer,
             sa.ForeignKey('%s.pk' % SERIES_TABLE_NAME)
+        )
+
+    @declared_attr
+    def series(self):
+        return sa.orm.relationship(
+            'Series'
+            , backref=pluralize(ENTRY_TABLE_NAME)
         )
 
     @declared_attr
@@ -166,7 +173,7 @@ class EntryMixin(BaseModel):
                 pass
 
         return sa.Column(
-            sa.Unicode(30)
+            sa.Unicode(128)
             , nullable=False
             , unique=True
             , default=slug_title
@@ -185,7 +192,7 @@ class EntryMixin(BaseModel):
     @declared_attr
     def title(self):
         """ Unique title for the entry """
-        return sa.Column(sa.Unicode(30), nullable=False, unique=True)
+        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
 
     @declared_attr
     def created_on(self):
@@ -253,19 +260,27 @@ class SeriesMixin(BaseModel):
     @declared_attr
     def title(self):
         """ Unique title for the series """
-        return sa.Column(sa.Unicode(30), nullable=False, unique=True)
+        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
+
+    @declared_attr
+    def slug(self):
+        """ Unique url readable title for the series """
+        def slug_title(context):
+            title = context.current_parameters['title']
+
+            if title:
+                return slugify(title)
+            else:
+                #TODO: need to raise IntegrityError here
+                pass
+
+        return sa.Column(
+            sa.Unicode(128)
+            , nullable=False
+            , unique=True
+            , default=slug_title
+        )
 
     @declared_attr
     def description(self):
         return sa.Column(sa.UnicodeText())
-
-#    @declared_attr
-#    def entries(self):
-#        """ relationship for entries belonging to this series """
-#        return sa.orm.relationship(
-#            'Entry'
-#            , secondary=ENTRY_TABLE_NAME
-#            , passive_deletes=True
-#            , passive_updates=True
-#            , backref=pluralize(SERIES_TABLE_NAME)
-#        )

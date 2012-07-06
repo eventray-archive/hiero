@@ -89,7 +89,49 @@ class TestEntry(BaseTestCase):
         entry.related_entries.append(entry2)
         entry.related_entries.append(entry3)
 
+        self.session.add(entry)
+
+        self.session.flush()
+
         assert len(entry.related_entries) == 2
         assert entry.related_entries[0] == entry2
         assert entry.related_entries[1] == entry3
+
+    def test_entry_entry_series(self):
+        from hiero.tests.models import User
+        from hiero.tests.models import Entry
+        from hiero.tests.models import Series
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry2 = Entry(owner=owner, title='test entry 1', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry3 = Entry(owner=owner, title='test entry 2', content='hi',
+            html_content='hi<br />'
+        )
+
+        series = Series(title='test series')
+        series.entries.append(entry)
+        series.entries.append(entry2)
+        series.entries.append(entry3)
+
+
+        self.session.add(series)
+
+        self.session.flush()
+
+        assert entry.series == series
+        assert len(series.entries) == 3 
+        assert series.entries[0] == entry
+        assert series.entries[1] == entry2
+        assert series.entries[2] == entry3
+        assert series.slug == 'test-series'
+
 
