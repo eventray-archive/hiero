@@ -7,8 +7,8 @@ from hiero.models               import SERIES_TABLE_NAME
 from hiero.models               import ENTRY_TAG_ASSOCIATION_TABLE_NAME
 from hem.db                     import get_session
 from hem.text                   import slugify
+from hem.text                   import pluralize
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.exc             import IntegrityError
 
 import sqlalchemy as sa
 
@@ -110,6 +110,13 @@ class EntryMixin(BaseModel):
             sa.Integer
             , sa.ForeignKey('%s.pk' % UserMixin.__tablename__)
             , nullable=False
+        )
+
+    @declared_attr
+    def owner(self):
+        return sa.orm.relationship(
+            'User'
+            , backref=pluralize(ENTRY_TABLE_NAME)
         )
 
     @declared_attr

@@ -17,19 +17,6 @@ class BaseModel(horus.models.BaseModel):
 
 class UserMixin(horus.models.UserMixin):
     pass
-    #@declared_attr
-    #def entries(self):
-    #    return sa.orm.relationship(
-    #        'Entry'
-    #        , secondary=ENTRY_TABLE_NAME
-    #        , passive_deletes=True
-    #        , passive_updates=True
-    #        , backref=pluralize(UserMixin.__tablename__)
-    #        , primaryjoin='%s.pk==%s.owner_pk' % (
-    #                UserMixin.__tablename__
-    #                , ENTRY_TABLE_NAME
-    #            )
-    #    )
 
 class GroupMixin(horus.models.GroupMixin):
     pass

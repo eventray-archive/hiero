@@ -39,3 +39,5 @@ class TestEntry(BaseTestCase):
         assert entry.is_published == False
         assert entry.is_featured == False
         assert entry.enable_comments == False
+        assert entry.owner != None
+        assert owner.entries[0] == entry
