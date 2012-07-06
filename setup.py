@@ -14,7 +14,7 @@ class PyTest(TestCommand):
         pytest.main(self.test_args)
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
+README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
@@ -48,7 +48,7 @@ setup(
     , zip_safe=False
     , install_requires=requires
     , cmdclass = {'test': PyTest}
-    , tests_require=requires + ['pytest', 'mock']
+    , tests_require=requires + ['pytest', 'mock', 'webtest']
     , test_suite="hiero"
     , entry_points = """\
     [paste.app_factory]
