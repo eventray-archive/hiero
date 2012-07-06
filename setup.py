@@ -1,6 +1,17 @@
 import os
 
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        pytest.main(self.test_args)
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -36,7 +47,8 @@ setup(
     , include_package_data=True
     , zip_safe=False
     , install_requires=requires
-    , tests_require=requires
+    , cmdclass = {'test': PyTest}
+    , tests_require=requires + ['pytest', 'mock']
     , test_suite="hiero"
     , entry_points = """\
     [paste.app_factory]
