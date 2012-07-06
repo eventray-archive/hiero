@@ -41,3 +41,29 @@ class TestEntry(BaseTestCase):
         assert entry.enable_comments == False
         assert entry.owner != None
         assert owner.entries[0] == entry
+
+    def test_entry_tags(self):
+        from hiero.tests.models import User
+        from hiero.tests.models import Entry
+        from hiero.tests.models import Tag
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />'
+        )
+
+        tag1 = Tag(title='python')
+        tag2 = Tag(title='linux')
+
+        entry.tags.append(tag1)
+        entry.tags.append(tag2)
+
+        self.session.add(entry)
+        self.session.flush()
+
+        assert len(entry.tags) == 2
+        assert tag1.entries[0] == entry
+        assert tag2.entries[0] == entry
+

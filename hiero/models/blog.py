@@ -72,16 +72,6 @@ class TagMixin(BaseModel):
         """ Unique title for the tag """
         return sa.Column(sa.Unicode(30), nullable=False, unique=True)
 
-#    @declared_attr
-#    def entries(self):
-#        return sa.orm.relationship(
-#            'Entry'
-#            , secondary=ENTRY_TABLE_NAME
-#            , passive_deletes=True
-#            , passive_updates=True
-#            , backref=pluralize(TagMixin.__tablename__)
-#        )
-
 class CategoryMixin(BaseModel):
     @declared_attr
     def title(self):
@@ -209,6 +199,17 @@ class EntryMixin(BaseModel):
     def published_on(self):
         """ Date the entry was published """
         return sa.Column(sa.TIMESTAMP(timezone=False))
+
+    @declared_attr
+    def tags(self):
+        return sa.orm.relationship(
+            'Tag'
+            , secondary=ENTRY_TAG_ASSOCIATION_TABLE_NAME
+            , passive_deletes=True
+            , passive_updates=True
+            , backref=pluralize(ENTRY_TABLE_NAME)
+        )
+
 
 #    @declared_attr
 #    def related_entries(self):
