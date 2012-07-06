@@ -1,22 +1,21 @@
-from pyramid.config import Configurator
+from hiero.interfaces   import IHieroEntryClass
+from hem.config         import get_class_from_config
 
-from sqlalchemy import engine_from_config
+def includeme(config):
+    settings = config.registry.settings
 
-from .models import DBSession
+    if not config.registry.queryUtility(IHieroEntryClass):
+        entry_class = get_class_from_config(settings, 'hiero.entry_class')
+        config.registry.registerUtility(entry_class, IHieroEntryClass)
 
-def main(global_config, **settings):
-    config = Configurator(settings=settings)
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('home', '/')
+    config.add_route('hiero_entry_index',   '/')
+    config.add_route('hiero_entry_detail',   '/')
     config.add_route('get_pages',   '/pages') 
     config.add_route('get_page',    '/pages/{link_title}')
     config.add_route('edit_page',   '/pages/{link_title}/edit')
     config.add_route('add_page',    '/add_page')
     config.add_route('remove_page', '/pages/{link_title}/remove')
     config.add_subscriber(add_renderer_globals, 'pyramid.events.BeforeRender')
-    config.include("pyramid_haml")
     config.scan()
     return config.make_wsgi_app()
 
