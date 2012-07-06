@@ -7,7 +7,7 @@ def pytest_sessionstart():
     # Only run database setup on master (in case of xdist/multiproc mode)
     if not hasattr(config, 'slaveinput'):
         from pyramid.config         import Configurator
-        from horus.tests.models     import Base
+        from hiero.tests.models     import Base
         from paste.deploy.loadwsgi  import appconfig
         from sqlalchemy             import engine_from_config
 
