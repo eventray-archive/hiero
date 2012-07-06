@@ -28,6 +28,14 @@ class TestEntry(BaseTestCase):
         self.session.add(owner)
         self.session.flush()
 
-        entry = Entry(owner_pk=owner.pk)
+        entry = Entry(owner_pk=owner.pk, title='test entry', content='hi',
+            html_content='hi<br />'
+        )
 
+        self.session.add(entry)
+        self.session.flush()
 
+        assert entry.slug == 'test-entry'
+        assert entry.is_published == False
+        assert entry.is_featured == False
+        assert entry.enable_comments == False

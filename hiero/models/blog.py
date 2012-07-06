@@ -6,7 +6,9 @@ from hiero.models               import ENTRY_TABLE_NAME
 from hiero.models               import SERIES_TABLE_NAME
 from hiero.models               import ENTRY_TAG_ASSOCIATION_TABLE_NAME
 from hem.db                     import get_session
+from hem.text                   import slugify
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.exc             import IntegrityError
 
 import sqlalchemy as sa
 
@@ -127,22 +129,51 @@ class EntryMixin(BaseModel):
     @declared_attr
     def is_featured(self):
         """ Allows to pull entries to the top """
-        return sa.Column(sa.Boolean, nullable=False)
+        return sa.Column(
+            sa.Boolean
+            , nullable=False
+            , default=False
+            , server_default='false'
+        )
 
     @declared_attr
     def is_published(self):
         """ Marks if the entry is a draft or ready to be displayed """
-        return sa.Column(sa.Boolean, nullable=False)
+        return sa.Column(
+            sa.Boolean
+            , nullable=False
+            , default=False
+            , server_default='false'
+        )
 
     @declared_attr
     def enable_comments(self):
         """ If we should allow comments or not"""
-        return sa.Column(sa.Boolean, nullable=False)
+        return sa.Column(
+            sa.Boolean
+            , nullable=False
+            , default=False
+            , server_default='false'
+        )
 
     @declared_attr
     def slug(self):
         """ Unique title for the entry """
-        return sa.Column(sa.Unicode(30), nullable=False, unique=True)
+        def slug_title(context):
+            title = context.current_parameters['title']
+
+            if title:
+                return slugify(title)
+            else:
+                #TODO: need to raise IntegrityError here
+                pass
+
+        return sa.Column(
+            sa.Unicode(30)
+            , nullable=False
+            , unique=True
+            , default=slug_title
+        )
 
     @declared_attr
     def content(self):
