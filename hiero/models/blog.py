@@ -284,3 +284,10 @@ class SeriesMixin(BaseModel):
     @declared_attr
     def description(self):
         return sa.Column(sa.UnicodeText())
+
+    @classmethod
+    def get_by_slug(cls, request, slug):
+        """Gets all active entries"""
+        session = get_session(request)
+
+        return session.query(cls).filter(cls.slug == slug)
