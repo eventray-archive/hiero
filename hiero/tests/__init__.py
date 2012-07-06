@@ -6,9 +6,11 @@ from pyramid                import testing
 from hem.interfaces         import IDBSession
 from horus.interfaces       import IHorusUserClass
 from horus.interfaces       import IHorusActivationClass
+from hiero.interfaces       import IHieroEntryClass
 from hiero.tests.models     import Base
 from hiero.tests.models     import User
 from hiero.tests.models     import Activation
+from hiero.tests.models     import Entry
 
 import unittest
 
@@ -35,6 +37,7 @@ class BaseTestCase(unittest.TestCase):
         self.config.registry.registerUtility(self.session, IDBSession)
         self.config.registry.registerUtility(Activation, IHorusActivationClass)
         self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Entry, IHieroEntryClass)
 
         Base.metadata.bind=connection
 
