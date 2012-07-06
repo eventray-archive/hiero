@@ -16,7 +16,8 @@ class EntryController(object):
         """ View that lists and pages all the entries """
         page = self.request.matchdict.get('page', 1)
 
-        return {'entries': self.Entry.get_all_active(self.request, page=page)}
+        query = self.Entry.get_all_active(self.request, page=page)
+        return {'entries': query.all() }
 
     @view_config(
         route_name='hiero_entry_detail'
@@ -26,8 +27,9 @@ class EntryController(object):
         """ View that is a detailed view of a single entry """
         slug = self.request.matchdict.get('slug', None)
 
-        if pk:
-            return {'entry': Entry.get_by_slug(request, slug)}
+        if slug:
+            query = self.Entry.get_by_slug(self.request, slug)
+            return {'entry': query.one()}
 
     @view_config(
         route_name='hiero_entry_search'
