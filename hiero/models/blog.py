@@ -211,16 +211,17 @@ class EntryMixin(BaseModel):
         )
 
 
-#    @declared_attr
-#    def related_entries(self):
-#        return sa.orm.relationship(
-#            'Entry'
-#            , secondary=ENTRY_ASSOCIATION_TABLE_NAME
-#            , passive_deletes=True
-#            , passive_updates=True
-#            , backref=pluralize(ENTRY_TABLE_NAME)
-#        )
-#
+    @declared_attr
+    def related_entries(self):
+        return sa.orm.relationship(
+            'Entry'
+            , secondary=ENTRY_ASSOCIATION_TABLE_NAME
+            , passive_deletes=True
+            , passive_updates=True
+            , primaryjoin='Entry.pk == EntryAssociation.parent_entry_pk'
+            , secondaryjoin='Entry.pk == EntryAssociation.related_entry_pk'
+        )
+
     @classmethod
     def get_all_active(cls, request, page=1, limit=10):
         """Gets all active entries"""

@@ -67,3 +67,29 @@ class TestEntry(BaseTestCase):
         assert tag1.entries[0] == entry
         assert tag2.entries[0] == entry
 
+    def test_entry_related_entries(self):
+        from hiero.tests.models import User
+        from hiero.tests.models import Entry
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry2 = Entry(owner=owner, title='test entry 1', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry3 = Entry(owner=owner, title='test entry 2', content='hi',
+            html_content='hi<br />'
+        )
+
+        entry.related_entries.append(entry2)
+        entry.related_entries.append(entry3)
+
+        assert len(entry.related_entries) == 2
+        assert entry.related_entries[0] == entry2
+        assert entry.related_entries[1] == entry3
+
