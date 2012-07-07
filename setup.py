@@ -28,6 +28,8 @@ requires = [
     ,'celementtree'
     , 'sqlalchemy'
     , 'psycopg2'
+    , 'hem>0.1'
+    , 'horus>0.9'
 ]
 
 setup(
@@ -52,6 +54,11 @@ setup(
     , cmdclass = {'test': PyTest}
     , tests_require=requires + ['pytest', 'mock', 'webtest']
     , test_suite="hiero"
+    , dependency_links = [
+        'https://github.com/sontek/hem/tarball/master#egg=hem'
+        'https://github.com/sontek/horus/tarball/master#egg=horus'
+    ]
+
     , entry_points = """\
     [paste.app_factory]
     main = hiero:main
