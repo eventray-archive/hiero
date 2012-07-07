@@ -3,10 +3,7 @@
   <head>
     <title>${self.title()}</title>
 
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<meta content="python web application" name="keywords" />
-		<meta content="pyramid web application" name="description" />
-    
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     ${ stylesheet_link_tag(request, "/hiero/css/app.css") | n }
 
     ${ script_tag(request, "/hiero/js/jquery-1.7.1.js") | n }
@@ -20,12 +17,12 @@
 
     ${ self.local_assets() }
 
-		<!-- [if lte IE 6]
-      stylesheet_link_tag(request, "ie6.css")
+    <!-- [if lte IE 6]
+    stylesheet_link_tag(request, "ie6.css")
     -->
 
-	</head>
-	<body>
+  </head>
+  <body>
     ${self.body()}
   </body>
 </html>

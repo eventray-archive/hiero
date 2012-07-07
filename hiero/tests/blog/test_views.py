@@ -1,4 +1,5 @@
 from hiero.tests    import BaseTestCase
+from hiero.tests    import IntegrationTestBase
 from pyramid        import testing
 from mock           import Mock
 
@@ -145,3 +146,51 @@ class TestBlogController(BaseTestCase):
 
         returned_entry = results['entry']
         returned_entry == entry
+
+class TestBlogIntegrationViews(IntegrationTestBase):
+    def test_index(self):
+        """ Call the index view, make sure routes are working """
+        from hiero.tests.models     import User
+        from hiero.tests.models     import Entry
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />foo', is_published=True
+        )
+
+        entry1 = Entry(owner=owner, title='test entry 1', content='hi',
+            html_content='hi<br />bar', is_published=True
+        )
+
+        self.session.add(owner)
+        self.session.add(entry)
+        self.session.add(entry1)
+
+        res = self.app.get('/')
+        assert res.status_int == 200
+        assert 'foo' in res.body
+        assert 'bar' in res.body
+
+    def test_detail(self):
+        """ Call the detail view, make sure routes are working """
+        from hiero.tests.models     import User
+        from hiero.tests.models     import Entry
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />', is_published=True
+        )
+
+        self.session.add(owner)
+        self.session.add(entry)
+        self.session.flush()
+
+        res = self.app.get('/test-entry')
+        assert res.status_int == 200
+        assert 'hi' in res.body

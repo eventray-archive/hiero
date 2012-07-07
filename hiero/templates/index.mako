@@ -1,4 +1,4 @@
-<%inherit file="app_layout.mako" />
+<%inherit file="hiero:templates/app_layout.mako" />
 
 <%def name="body()">
   <script> 
