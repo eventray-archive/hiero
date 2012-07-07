@@ -139,13 +139,9 @@ class TestBlogController(BaseTestCase):
 
         request.matchdict.get = get
 
-
-
         controller = EntryController(request)
 
         results = controller.detail()
 
         returned_entry = results['entry']
         returned_entry == entry
-
-

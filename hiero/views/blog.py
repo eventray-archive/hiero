@@ -4,11 +4,6 @@ from hem.db             import get_session
 from pyramid.view       import view_config
 
 class EntryController(BaseController):
-    def __init__(self, request):
-        self.request = request
-        self.session = get_session(request)
-        self.Entry = request.registry.getUtility(IHieroEntryClass)
-
     @view_config(
             route_name='hiero_entry_index'
             , renderer='hiero:templates/index.mkao'
