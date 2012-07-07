@@ -21,7 +21,7 @@ def pytest_sessionstart():
         print 'Creating the tables on the test database %s' % engine
 
         config = Configurator(settings=settings)
-        config.scan('horus.models')
+        config.scan('hiero.models')
 
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
