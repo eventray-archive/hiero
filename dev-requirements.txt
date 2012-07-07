@@ -1,2 +1,2 @@
 -e git://github.com/sontek/hem.git#egg=hem
--e git://github.com/sontek/horus.git#egg=hem
+-e git://github.com/sontek/horus.git#egg=horus
