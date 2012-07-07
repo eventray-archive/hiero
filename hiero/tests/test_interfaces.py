@@ -1,4 +1,4 @@
-from horus.tests import BaseTestCase
+from hiero.tests import BaseTestCase
 
 class TestInterfaces(BaseTestCase):
     def test_entry_class(self):
