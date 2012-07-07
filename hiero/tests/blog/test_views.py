@@ -194,3 +194,24 @@ class TestBlogIntegrationViews(IntegrationTestBase):
         res = self.app.get('/test-entry')
         assert res.status_int == 200
         assert 'hi' in res.body
+
+    def test_edit(self):
+        """ Call the edit view, make sure routes are working """
+        from hiero.tests.models     import User
+        from hiero.tests.models     import Entry
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+
+        entry = Entry(owner=owner, title='test entry', content='hi',
+            html_content='hi<br />', is_published=True
+        )
+
+        self.session.add(owner)
+        self.session.add(entry)
+        self.session.flush()
+
+        res = self.app.get('/test-entry/edit')
+        assert res.status_int == 200
+        assert 'EDIT' in res.body

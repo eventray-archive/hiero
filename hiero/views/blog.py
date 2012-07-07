@@ -18,7 +18,7 @@ class EntryController(BaseController):
 
     @view_config(
         route_name='hiero_entry_detail'
-        , renderer='hiero:templates/detail.mako'
+        , renderer='hiero:templates/entry_detail.mako'
     )
     def detail(self):
         """ View that is a detailed view of a single entry """
