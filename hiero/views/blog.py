@@ -1,8 +1,9 @@
+from hiero.views        import BaseController
 from hiero.interfaces   import IHieroEntryClass
 from hem.db             import get_session
 from pyramid.view       import view_config
 
-class EntryController(object):
+class EntryController(BaseController):
     def __init__(self, request):
         self.request = request
         self.session = get_session(request)
