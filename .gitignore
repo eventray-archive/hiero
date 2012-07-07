@@ -29,3 +29,5 @@ pip-log.txt
 
 # Generated files
 /hiero/.sass-cache
+
+__pycache__
