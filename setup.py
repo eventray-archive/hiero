@@ -55,8 +55,8 @@ setup(
     , tests_require=requires + ['pytest', 'mock', 'webtest']
     , test_suite="hiero"
     , dependency_links = [
-        'https://github.com/sontek/hem/tarball/master#egg=hem-dev'
-        , 'https://github.com/sontek/horus/tarball/master#egg=horus-dev'
+        'https://github.com/eventray/hem/tarball/master#egg=hem-dev'
+        , 'https://github.com/eventray/horus/tarball/master#egg=horus-dev'
     ]
 
     , entry_points = """\
