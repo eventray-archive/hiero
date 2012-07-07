@@ -1,4 +1,5 @@
 import os
+import sys
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
@@ -11,7 +12,8 @@ class PyTest(TestCommand):
     def run_tests(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
-        pytest.main(self.test_args)
+        result = pytest.main(self.test_args)
+        sys.exit(result)
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
