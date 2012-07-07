@@ -28,8 +28,8 @@ requires = [
     ,'celementtree'
     , 'sqlalchemy'
     , 'psycopg2'
-    , 'hem>0.1'
-    , 'horus>0.9'
+    , 'hem==dev'
+    , 'horus==dev'
 ]
 
 setup(
@@ -55,8 +55,8 @@ setup(
     , tests_require=requires + ['pytest', 'mock', 'webtest']
     , test_suite="hiero"
     , dependency_links = [
-        'https://github.com/sontek/hem/tarball/master#egg=hem'
-        'https://github.com/sontek/horus/tarball/master#egg=horus'
+        'https://github.com/sontek/hem/tarball/master#egg=hem-dev'
+        , 'https://github.com/sontek/horus/tarball/master#egg=horus-dev'
     ]
 
     , entry_points = """\
