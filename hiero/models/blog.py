@@ -252,16 +252,17 @@ class EntryMixin(BaseModel):
         session = get_session(request)
 
         query = session.query(cls).filter(cls.is_published == True)
+        query.order_by(cls.published_on)
         query = query.limit(limit)
 
-        if page > 1:
-            query.offset(page * limit)
+        offset = (page - 1) * limit
+        query = query.offset(offset)
 
         return query
 
     @classmethod
     def get_by_slug(cls, request, slug):
-        """Gets all active entries"""
+        """Gets an entry by its slug """
         session = get_session(request)
 
         return session.query(cls).filter(cls.slug == slug)

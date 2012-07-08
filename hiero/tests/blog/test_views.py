@@ -96,6 +96,61 @@ class TestBlogController(BaseTestCase):
         assert entries[0] == entry
         assert entries[1] == entry1
 
+    def test_index_active_paging(self):
+        from hem.db                 import IDBSession
+        from hiero.views.blog       import EntryController
+        from horus.interfaces       import IHorusUserClass
+        from horus.interfaces       import IHorusActivationClass
+        from hiero.interfaces       import IHieroEntryClass
+        from hiero.tests.models     import User
+        from hiero.tests.models     import Entry
+        from hiero.tests.models     import Activation
+
+        self.config.registry.registerUtility(Activation, IHorusActivationClass)
+        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Entry, IHieroEntryClass)
+        self.config.registry.registerUtility(self.session, IDBSession)
+
+        self.config.add_route('hiero_entry_index', '/')
+
+        request = testing.DummyRequest()
+        request.matchdict = Mock()
+
+        def get(key, default):
+            if key == 'page':
+                return 2
+
+        request.matchdict.get = get
+
+        owner = User(user_name='sontek', email='sontek@gmail.com')
+        owner.set_password('foo')
+
+        self.session.add(owner)
+
+        entries = []
+
+        for i in xrange(1, 21):
+            entry = Entry(owner=owner, title='test entry %s' % i, content='hi',
+                html_content='hi<br />%s' % i, is_published=True,
+                published_on='4/%s/2012' % i
+            )
+
+            self.session.add(entry)
+
+            entries.append(entry)
+
+        self.session.flush()
+
+        controller = EntryController(request)
+
+        results = controller.index()
+
+        result_entries = results['entries']
+
+        assert len(result_entries) == 10
+        assert entries[12].title == result_entries[2].title
+        assert not entries[0] in result_entries
+
     def test_detail(self):
         from hem.db                 import IDBSession
         from hiero.views.blog       import EntryController
