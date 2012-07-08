@@ -12,9 +12,13 @@ class EntryController(BaseController):
             route_name='hiero_entry_index'
             , renderer='hiero:templates/blog_index.mako'
     )
+    @view_config(
+            route_name='hiero_entry_index_paged'
+            , renderer='hiero:templates/blog_index.mako'
+    )
     def index(self):
         """ View that lists and pages all the entries """
-        page = self.request.matchdict.get('page', 1)
+        page = int(self.request.matchdict.get('page', 1))
 
         query = self.Entry.get_all_active(self.request, page=page)
         return {'entries': query.all()}
@@ -38,22 +42,6 @@ class EntryController(BaseController):
                 logger.debug('Could not find slug %s' % slug)
                 raise
 
-    @view_config(
-        route_name='hiero_entry_edit'
-        , renderer='hiero:templates/entry_edit.mako'
-    )
-    def edit(self):
-        """ View that is for editing a single entry """
-        slug = self.request.matchdict.get('slug', None)
-
-        if slug:
-            if self.request.method == 'GET':
-                query = self.Entry.get_by_slug(self.request, slug)
-                return {'entry': query.one()}
-            elif self.request.method == 'POST':
-                # valid entry post with colander
-                pass
-
 
     @view_config(
         route_name='hiero_entry_search'
@@ -68,9 +56,23 @@ class AdminEntryController(BaseController):
             route_name='hiero_admin_entry_index'
             , renderer='hiero:templates/blog_admin_index.mako'
     )
+    @view_config(
+            route_name='hiero_admin_entry_index_paged'
+            , renderer='hiero:templates/blog_admin_index.mako'
+    )
     def index(self):
         """ View that lists and pages all the entries for admins """
-        page = self.request.matchdict.get('page', 1)
+        page = int(self.request.matchdict.get('page', 1))
 
         query = self.Entry.get_all_active(self.request, page=page)
-        return {'entries': query.all()}
+
+    @view_config(
+            route_name='hiero_admin_entry_create'
+            , renderer='hiero:templates/blog_admin_new_entry.mako'
+    )
+    def create(self):
+        if self.request.method == 'GET':
+            return {}
+        else:
+            # save the entry
+            pass
