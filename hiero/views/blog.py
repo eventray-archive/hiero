@@ -1,8 +1,12 @@
 from hiero.views        import BaseController
 from hiero.interfaces   import IHieroEntryClass
+from hiero.schemas.blog import EntryAdminSchema
+from hiero.forms        import HieroForm
 from hem.db             import get_session
 from pyramid.view       import view_config
 from sqlalchemy.orm.exc import NoResultFound
+import colander
+import deform
 import logging
 
 logger = logging.getLogger(__name__)
@@ -71,8 +75,15 @@ class AdminEntryController(BaseController):
             , renderer='hiero:templates/blog_admin_new_entry.mako'
     )
     def create(self):
+        schema = EntryAdminSchema()
+        schema = schema.bind(request=self.request)
+        form = HieroForm(schema)
+
         if self.request.method == 'GET':
-            return {}
+            return dict(form=form)
         else:
-            # save the entry
-            pass
+            try:
+                controls = self.request.POST.items()
+                captured = form.validate(controls)
+            except deform.ValidationFailure, e:
+                return dict(form=e, errors=e.error.children)
