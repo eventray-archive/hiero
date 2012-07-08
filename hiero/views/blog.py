@@ -2,6 +2,10 @@ from hiero.views        import BaseController
 from hiero.interfaces   import IHieroEntryClass
 from hem.db             import get_session
 from pyramid.view       import view_config
+from sqlalchemy.orm.exc import NoResultFound
+import logging
+
+logger = logging.getLogger(__name__)
 
 class EntryController(BaseController):
     @view_config(
@@ -26,8 +30,13 @@ class EntryController(BaseController):
 
         if slug:
             query = self.Entry.get_by_slug(self.request, slug)
-            return {'entry': query.one()}
 
+            try:
+                result = query.one()
+                return dict(entry=result)
+            except NoResultFound as exc:
+                logger.debug('Could not find slug %s' % slug)
+                raise
 
     @view_config(
         route_name='hiero_entry_edit'
