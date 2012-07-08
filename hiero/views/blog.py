@@ -62,3 +62,15 @@ class EntryController(BaseController):
     def search(self):
         """ View that allows you to search entries """
         pass
+
+class AdminEntryController(BaseController):
+    @view_config(
+            route_name='hiero_admin_entry_index'
+            , renderer='hiero:templates/blog_admin_index.mako'
+    )
+    def index(self):
+        """ View that lists and pages all the entries for admins """
+        page = self.request.matchdict.get('page', 1)
+
+        query = self.Entry.get_all_active(self.request, page=page)
+        return {'entries': query.all()}
