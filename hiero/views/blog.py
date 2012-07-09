@@ -1,15 +1,19 @@
-from hiero.views        import BaseController
-from hiero.interfaces   import IHieroEntryClass
-from hiero.schemas.blog import EntryAdminSchema
-from hiero.forms        import HieroForm
-from hem.db             import get_session
-from pyramid.view       import view_config
-from sqlalchemy.orm.exc import NoResultFound
+from hiero.views            import BaseController
+from hiero.interfaces       import IHieroEntryClass
+from hiero.schemas.blog     import EntryAdminSchema
+from hiero.forms            import HieroForm
+from hem.db                 import get_session
+from pyramid.view           import view_config
+from pyramid.httpexceptions import HTTPFound
+from sqlalchemy.orm.exc     import NoResultFound
+from pyramid.i18n           import TranslationStringFactory
 import colander
 import deform
 import logging
 
 logger = logging.getLogger(__name__)
+
+_ = TranslationStringFactory('hiero')
 
 class EntryController(BaseController):
     @view_config(
@@ -68,7 +72,9 @@ class AdminEntryController(BaseController):
         """ View that lists and pages all the entries for admins """
         page = int(self.request.matchdict.get('page', 1))
 
-        query = self.Entry.get_all_active(self.request, page=page)
+        query = self.Entry.get_all(self.request, page=page)
+
+        return dict(entries=query.all())
 
     @view_config(
             route_name='hiero_admin_entry_create'
@@ -87,3 +93,21 @@ class AdminEntryController(BaseController):
                 captured = form.validate(controls)
             except deform.ValidationFailure, e:
                 return dict(form=e, errors=e.error.children)
+
+            entry = self.Entry(
+                title = captured['title']
+                , owner_pk = captured['owner']
+                , content = captured['content']
+                , html_content = captured['content']
+                , slug = captured['slug']
+            )
+
+            self.session.add(entry)
+
+            self.request.session.flash(_(u'The entry was created'), 'success')
+
+            return HTTPFound(
+                location=self.request.route_url('hiero_admin_entry_index')
+            )
+
+

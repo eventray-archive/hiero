@@ -1,4 +1,7 @@
 from hiero.interfaces   import IHieroEntryClass
+from hiero.interfaces   import IHieroSeriesClass
+from hiero.interfaces   import IHieroCategoryClass
+
 from hem.config         import get_class_from_config
 
 def includeme(config):
@@ -8,14 +11,16 @@ def includeme(config):
         entry_class = get_class_from_config(settings, 'hiero.entry_class')
         config.registry.registerUtility(entry_class, IHieroEntryClass)
 
-    config.add_route('hiero_entry_index',   '/')
-    config.add_route('hiero_entry_index_paged',   '/page/{page}')
-    config.add_route('hiero_admin_entry_index',   '/admin')
-    config.add_route('hiero_admin_entry_index_paged',   '/admin/page/{page}')
-    config.add_route('hiero_admin_entry_create',   '/admin/new_entry')
-    config.add_route('hiero_entry_detail',   '{slug}')
-    config.add_route('hiero_entry_edit',   '{slug}/edit')
-    config.add_route('hiero_entry_search',   '{term}')
+    if not config.registry.queryUtility(IHieroSeriesClass):
+        series_class = get_class_from_config(settings, 'hiero.series_class')
+        config.registry.registerUtility(series_class, IHieroSeriesClass)
+
+    if not config.registry.queryUtility(IHieroCategoryClass):
+        cat_class = get_class_from_config(settings, 'hiero.category_class')
+        config.registry.registerUtility(cat_class, IHieroCategoryClass)
+
+    config.include('hiero.routes')
+
  #   config.add_route('get_pages',   '/pages') 
  #   config.add_route('get_page',    '/pages/{link_title}')
  #   config.add_route('edit_page',   '/pages/{link_title}/edit')
