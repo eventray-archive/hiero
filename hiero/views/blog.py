@@ -99,8 +99,16 @@ class AdminEntryController(BaseController):
                 , owner_pk = captured['owner']
                 , content = captured['content']
                 , html_content = captured['content']
-                , slug = captured['slug']
+                , category_pk = captured['category']
+                , series_pk = captured['series']
+                , is_featured = captured['is_featured']
+                , is_published = captured['is_published']
+                , enable_comments = captured['enable_comments']
+                , published_on = captured['published_on']
             )
+
+            if captured['slug']:
+                entry.slug = captured['slug']
 
             self.session.add(entry)
 

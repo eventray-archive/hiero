@@ -66,8 +66,10 @@ class EntryAdminSchema(CSRFSchema):
         validator=colander.Length(max=128)
     )
 
-    slug = colander.SchemaNode(colander.String(),
-        validator=colander.Length(max=128)
+    slug = colander.SchemaNode(
+        colander.String()
+        , validator=colander.Length(max=128)
+        , missing = None
     )
 
     content = colander.SchemaNode(colander.String())
@@ -93,25 +95,20 @@ class EntryAdminSchema(CSRFSchema):
 
     is_featured = colander.SchemaNode(
         colander.Boolean()
-        , missing = None
+        , missing = False
     )
 
     is_published = colander.SchemaNode(
             colander.Boolean()
-            , missing = None
+            , missing = False
     )
 
     enable_comments = colander.SchemaNode(
         colander.Boolean()
-        , missing = None
+        , missing = False
     )
 
     published_on = colander.SchemaNode(
-        colander.DateTime()
-        , missing = None
-    )
-
-    created_on = colander.SchemaNode(
         colander.DateTime()
         , missing = None
     )
