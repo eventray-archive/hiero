@@ -2,6 +2,7 @@ from hiero.views            import BaseController
 from hiero.interfaces       import IHieroEntryClass
 from hiero.schemas.blog     import EntryAdminSchema
 from hiero.forms            import HieroForm
+from horus.resources        import RootFactory
 from hem.db                 import get_session
 from pyramid.view           import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -80,13 +81,23 @@ class AdminEntryController(BaseController):
             route_name='hiero_admin_entry_create'
             , renderer='hiero:templates/blog_admin_new_entry.mako'
     )
+    @view_config(
+            route_name='hiero_admin_entry_edit'
+            , renderer='hiero:templates/blog_admin_new_entry.mako'
+    )
     def create(self):
         schema = EntryAdminSchema()
         schema = schema.bind(request=self.request)
         form = HieroForm(schema)
 
         if self.request.method == 'GET':
-            return dict(form=form)
+            if isinstance(self.request.context, RootFactory):
+                return dict(form=form)
+            else:
+                return dict(
+                    form=form,
+                    appstruct = self.request.context.__json__()
+                )
         else:
             try:
                 controls = self.request.POST.items()
@@ -94,18 +105,22 @@ class AdminEntryController(BaseController):
             except deform.ValidationFailure, e:
                 return dict(form=e, errors=e.error.children)
 
-            entry = self.Entry(
-                title = captured['title']
-                , owner_pk = captured['owner']
-                , content = captured['content']
-                , html_content = captured['content']
-                , category_pk = captured['category']
-                , series_pk = captured['series']
-                , is_featured = captured['is_featured']
-                , is_published = captured['is_published']
-                , enable_comments = captured['enable_comments']
-                , published_on = captured['published_on']
-            )
+
+            if isinstance(self.request.context, RootFactory):
+                entry = self.Entry()
+            else:
+                entry = self.request.context
+
+            entry.title = captured['title']
+            entry.owner_pk = captured['owner']
+            entry.content = captured['content']
+            entry.html_content = captured['content']
+            entry.category_pk = captured['category']
+            entry.series_pk = captured['series']
+            entry.is_featured = captured['is_featured']
+            entry.is_published = captured['is_published']
+            entry.enable_comments = captured['enable_comments']
+            entry.published_on = captured['published_on']
 
             if captured['slug']:
                 entry.slug = captured['slug']

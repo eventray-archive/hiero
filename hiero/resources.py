@@ -7,7 +7,7 @@ class EntryFactory(RootFactory):
         self.Entry = request.registry.getUtility(IHieroEntryClass)
 
     def __getitem__(self, key):
-        entry = self.Entry.get_by_slug(self.request, key)
+        entry = self.Entry.get_by_slug(self.request, key).one()
 
         if entry:
             entry.__parent__ = self

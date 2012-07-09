@@ -1,4 +1,5 @@
 from hem.schemas        import CSRFSchema
+from horus.resources    import RootFactory
 from horus.interfaces   import IHorusUserClass
 from hiero.interfaces   import IHieroSeriesClass
 from hiero.interfaces   import IHieroCategoryClass
@@ -21,7 +22,7 @@ def owner_widget(node, kw):
 def owner_default(node, kw):
     request = kw.get('request')
 
-    if not request.context.is_root:
+    if not isinstance(request.context, RootFactory):
         return request.context.owner_pk
 
 @colander.deferred
@@ -39,7 +40,7 @@ def series_widget(node, kw):
 def series_default(node, kw):
     request = kw.get('request')
 
-    if not request.context.is_root:
+    if not isinstance(request.context, RootFactory):
         return request.context.series_pk
 
 @colander.deferred
@@ -57,7 +58,7 @@ def category_widget(node, kw):
 def category_default(node, kw):
     request = kw.get('request')
 
-    if not request.context.is_root:
+    if not isinstance(request.context, RootFactory):
         return request.context.category_pk
 
 class EntryAdminSchema(CSRFSchema):
