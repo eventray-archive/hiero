@@ -1,6 +1,6 @@
 from hiero.resources    import EntryFactory
 from hiero.resources    import CategoryFactory
-#from hiero.resources    import SeriesFactory
+from hiero.resources    import SeriesFactory
 
 def includeme(config):
     config.add_route('hiero_entry_index',   '/')
@@ -26,6 +26,17 @@ def includeme(config):
            , factory=CategoryFactory
            , traverse="/{slug}"
     )
+
+    config.add_route('hiero_admin_series_index_paged',
+            '/admin/series/page/{page}')
+    config.add_route('hiero_admin_series_index',   '/admin/series')
+    config.add_route('hiero_admin_series_create',   '/admin/series/new')
+    config.add_route('hiero_admin_series_edit'
+           , '/admin/series/{slug}/edit'
+           , factory=SeriesFactory
+           , traverse="/{slug}"
+    )
+
 
     config.add_static_view('static/deform', 'deform:static')
     config.add_static_view('static', 'hiero:static')

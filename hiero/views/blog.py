@@ -200,3 +200,66 @@ class AdminEntryController(BaseController):
             return HTTPFound(
                 location=self.request.route_url('hiero_admin_category_index')
             )
+
+
+    @view_config(
+            route_name='hiero_admin_series_index'
+            , renderer='hiero:templates/admin/series_index.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_series_index_paged'
+            , renderer='hiero:templates/admin/series_index.mako'
+    )
+    def series_index(self):
+        page = int(self.request.matchdict.get('page', 1))
+
+        query = self.Series.get_all(self.request, page=page)
+
+        return dict(series=query.all())
+
+    @view_config(
+            route_name='hiero_admin_series_create'
+            , renderer='hiero:templates/admin/edit_series.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_series_edit'
+            , renderer='hiero:templates/admin/edit_series.mako'
+    )
+    def create_series(self):
+        schema = SeriesAdminSchema()
+        schema = schema.bind(request=self.request)
+        form = HieroForm(schema)
+
+        if self.request.method == 'GET':
+            if isinstance(self.request.context, RootFactory):
+                return dict(form=form)
+            else:
+                return dict(
+                    form=form,
+                    appstruct = self.request.context.__json__()
+                )
+        else:
+            try:
+                controls = self.request.POST.items()
+                captured = form.validate(controls)
+            except deform.ValidationFailure, e:
+                return dict(form=e, errors=e.error.children)
+
+
+            if isinstance(self.request.context, RootFactory):
+                series = self.Series()
+            else:
+                series = self.request.context
+
+            series.title = captured['title']
+
+            if captured['slug']:
+                series.slug = captured['slug']
+
+            self.session.add(series)
+
+            self.request.session.flash(_(u'The series was created'), 'success')
+
+            return HTTPFound(
+                location=self.request.route_url('hiero_admin_series_index')
+            )

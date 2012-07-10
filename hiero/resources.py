@@ -30,3 +30,17 @@ class CategoryFactory(RootFactory):
             category.__name__ = key
 
         return category
+
+class SeriesFactory(RootFactory):
+    def __init__(self, request):
+        self.request = request
+        self.Series = request.registry.getUtility(IHieroSeriesClass)
+
+    def __getitem__(self, key):
+        series = self.Series.get_by_slug(self.request, key).one()
+
+        if series:
+            series.__parent__ = self
+            series.__name__ = key
+
+        return series
