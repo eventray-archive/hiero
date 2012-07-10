@@ -62,14 +62,21 @@ class EntryController(BaseController):
 
 class AdminEntryController(BaseController):
     @view_config(
-            route_name='hiero_admin_entry_index'
-            , renderer='hiero:templates/admin/index.mako'
-    )
-    @view_config(
-            route_name='hiero_admin_entry_index_paged'
+            route_name='hiero_admin_index'
             , renderer='hiero:templates/admin/index.mako'
     )
     def index(self):
+        return {}
+
+    @view_config(
+            route_name='hiero_admin_entry_index'
+            , renderer='hiero:templates/admin/entry_index.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_entry_index_paged'
+            , renderer='hiero:templates/admin/entry_index.mako'
+    )
+    def entry_index(self):
         """ View that lists and pages all the entries for admins """
         page = int(self.request.matchdict.get('page', 1))
 
