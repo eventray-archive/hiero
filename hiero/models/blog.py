@@ -97,6 +97,13 @@ class CategoryMixin(BaseModel):
             , default=slug_title
         )
 
+    @classmethod
+    def get_by_slug(cls, request, slug):
+        """Gets a category by its slug """
+        session = get_session(request)
+
+        return session.query(cls).filter(cls.slug == slug)
+
 
 # markup type
 class EntryMixin(BaseModel):

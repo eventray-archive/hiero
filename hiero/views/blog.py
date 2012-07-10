@@ -1,14 +1,13 @@
 from hiero.views            import BaseController
-from hiero.interfaces       import IHieroEntryClass
 from hiero.schemas.blog     import EntryAdminSchema
+from hiero.schemas.blog     import CategoryAdminSchema
+from hiero.schemas.blog     import SeriesAdminSchema
 from hiero.forms            import HieroForm
 from horus.resources        import RootFactory
-from hem.db                 import get_session
 from pyramid.view           import view_config
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm.exc     import NoResultFound
 from pyramid.i18n           import TranslationStringFactory
-import colander
 import deform
 import logging
 
@@ -92,7 +91,7 @@ class AdminEntryController(BaseController):
             route_name='hiero_admin_entry_edit'
             , renderer='hiero:templates/admin/edit_entry.mako'
     )
-    def create(self):
+    def create_entry(self):
         schema = EntryAdminSchema()
         schema = schema.bind(request=self.request)
         form = HieroForm(schema)
@@ -140,4 +139,64 @@ class AdminEntryController(BaseController):
                 location=self.request.route_url('hiero_admin_entry_index')
             )
 
+    @view_config(
+            route_name='hiero_admin_category_index'
+            , renderer='hiero:templates/admin/category_index.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_category_index_paged'
+            , renderer='hiero:templates/admin/category_index.mako'
+    )
+    def category_index(self):
+        page = int(self.request.matchdict.get('page', 1))
 
+        query = self.Category.get_all(self.request, page=page)
+
+        return dict(categories=query.all())
+
+    @view_config(
+            route_name='hiero_admin_category_create'
+            , renderer='hiero:templates/admin/edit_category.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_category_edit'
+            , renderer='hiero:templates/admin/edit_category.mako'
+    )
+    def create_category(self):
+        schema = CategoryAdminSchema()
+        schema = schema.bind(request=self.request)
+        form = HieroForm(schema)
+
+        if self.request.method == 'GET':
+            if isinstance(self.request.context, RootFactory):
+                return dict(form=form)
+            else:
+                return dict(
+                    form=form,
+                    appstruct = self.request.context.__json__()
+                )
+        else:
+            try:
+                controls = self.request.POST.items()
+                captured = form.validate(controls)
+            except deform.ValidationFailure, e:
+                return dict(form=e, errors=e.error.children)
+
+
+            if isinstance(self.request.context, RootFactory):
+                category = self.Category()
+            else:
+                category = self.request.context
+
+            category.title = captured['title']
+
+            if captured['slug']:
+                category.slug = captured['slug']
+
+            self.session.add(category)
+
+            self.request.session.flash(_(u'The category was created'), 'success')
+
+            return HTTPFound(
+                location=self.request.route_url('hiero_admin_category_index')
+            )

@@ -116,3 +116,26 @@ class EntryAdminSchema(CSRFSchema):
         colander.DateTime()
         , missing = None
     )
+
+
+class CategoryAdminSchema(CSRFSchema):
+    title = colander.SchemaNode(colander.String(),
+        validator=colander.Length(max=128)
+    )
+
+    slug = colander.SchemaNode(
+        colander.String()
+        , validator=colander.Length(max=128)
+        , missing = None
+    )
+
+class SeriesAdminSchema(CSRFSchema):
+    title = colander.SchemaNode(colander.String(),
+        validator=colander.Length(max=128)
+    )
+
+    slug = colander.SchemaNode(
+        colander.String()
+        , validator=colander.Length(max=128)
+        , missing = None
+    )
