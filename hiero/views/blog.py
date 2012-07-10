@@ -63,11 +63,11 @@ class EntryController(BaseController):
 class AdminEntryController(BaseController):
     @view_config(
             route_name='hiero_admin_entry_index'
-            , renderer='hiero:templates/blog_admin_index.mako'
+            , renderer='hiero:templates/admin/index.mako'
     )
     @view_config(
             route_name='hiero_admin_entry_index_paged'
-            , renderer='hiero:templates/blog_admin_index.mako'
+            , renderer='hiero:templates/admin/index.mako'
     )
     def index(self):
         """ View that lists and pages all the entries for admins """
@@ -79,11 +79,11 @@ class AdminEntryController(BaseController):
 
     @view_config(
             route_name='hiero_admin_entry_create'
-            , renderer='hiero:templates/blog_admin_new_entry.mako'
+            , renderer='hiero:templates/admin/edit_entry.mako'
     )
     @view_config(
             route_name='hiero_admin_entry_edit'
-            , renderer='hiero:templates/blog_admin_new_entry.mako'
+            , renderer='hiero:templates/admin/edit_entry.mako'
     )
     def create(self):
         schema = EntryAdminSchema()

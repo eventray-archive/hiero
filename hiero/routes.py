@@ -13,3 +13,6 @@ def includeme(config):
     )
     config.add_route('hiero_entry_detail',   '{slug}')
     config.add_route('hiero_entry_search',   '{term}')
+
+    config.add_static_view('static/deform', 'deform:static')
+    config.add_static_view('static', 'hiero:static')

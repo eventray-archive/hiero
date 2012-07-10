@@ -73,7 +73,10 @@ class EntryAdminSchema(CSRFSchema):
         , missing = None
     )
 
-    content = colander.SchemaNode(colander.String())
+    content = colander.SchemaNode(
+        colander.String()
+        , widget = deform.widget.RichTextWidget()
+    )
     owner = colander.SchemaNode(
         colander.String()
         , widget = owner_widget
