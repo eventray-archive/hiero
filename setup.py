@@ -25,7 +25,7 @@ requires = [
     , 'pyramid_tm'
     , 'waitress'
     , 'horus'
-    ,'celementtree'
+    , 'celementtree'
     , 'sqlalchemy'
     , 'psycopg2'
     , 'hem==dev'
