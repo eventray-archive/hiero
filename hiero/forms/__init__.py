@@ -1,7 +1,9 @@
 import deform
 
 class BaseForm(deform.Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+
         if not kwargs.get('buttons'):
             kwargs['buttons'] = ('submit', )
 
