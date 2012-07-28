@@ -9,7 +9,7 @@ import deform
 
 @colander.deferred
 def owner_widget(node, kw):
-    choices = []
+    choices = [('', '')]
     request = kw.get('request')
     User = request.registry.getUtility(IHorusUserClass)
 
