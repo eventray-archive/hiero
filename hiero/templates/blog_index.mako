@@ -1,10 +1,5 @@
+<%namespace name="render_entry" file="hiero:templates/blog_utilities.mako"/>
+
 % for entry in entries:
   ${render_entry(entry)}
 % endfor
-
-<%def name="render_entry(entry)">
-  title: ${entry.title}<br />
-  slug: ${entry.slug}<br />
-  html_content: ${entry.html_content | n }
-  <hr />
-</%def>
