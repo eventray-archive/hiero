@@ -3,7 +3,8 @@
 % endfor
 
 <%def name="render_entry(entry)">
-  title: ${entry.title}
-  slug: ${entry.slug}
-  html_content: ${entry.html_content}
+  title: ${entry.title}<br />
+  slug: ${entry.slug}<br />
+  html_content: ${entry.html_content | n }
+  <hr />
 </%def>
