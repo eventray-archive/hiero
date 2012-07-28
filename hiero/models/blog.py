@@ -127,6 +127,11 @@ class EntryMixin(BaseModel):
         )
 
     @declared_attr
+    def markup(self):
+        """ The markup format"""
+        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
+
+    @declared_attr
     def series_pk(self):
         return sa.Column(
             sa.Integer,

@@ -28,6 +28,9 @@ requires = [
     , 'celementtree'
     , 'sqlalchemy'
     , 'psycopg2'
+    , 'BeautifulSoup'
+    , 'markdown'
+    , 'docutils'
     , 'hem==dev'
     , 'horus==dev'
 ]

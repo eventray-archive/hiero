@@ -3,6 +3,7 @@ from hiero.schemas.blog     import EntryAdminSchema
 from hiero.schemas.blog     import CategoryAdminSchema
 from hiero.schemas.blog     import SeriesAdminSchema
 from hiero.forms            import HieroForm
+from hiero.formatters       import get_formatter
 from horus.resources        import RootFactory
 from pyramid.view           import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -120,7 +121,16 @@ class AdminEntryController(BaseController):
             entry.title = captured['title']
             entry.owner_pk = captured['owner']
             entry.content = captured['content']
-            entry.html_content = captured['content']
+            entry.markup = captured['markup']
+
+            import pdb; pdb.set_trace()
+            formatter = get_formatter(captured['markup'])
+
+            if formatter:
+                entry.html_content = formatter(entry.content).get_html()
+            else:
+                entry.html_content = entry.content
+
             entry.category_pk = captured['category']
             entry.series_pk = captured['series']
             entry.is_featured = captured['is_featured']

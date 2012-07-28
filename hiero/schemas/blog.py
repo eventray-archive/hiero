@@ -74,6 +74,27 @@ def category_default(node, kw):
     if not isinstance(request.context, RootFactory):
         return request.context.category_pk
 
+@colander.deferred
+def markup_widget(node, kw):
+    choices = [('', '')]
+    request = kw.get('request')
+    formatters = ['markdown', 'htmlblock', 'rst']
+    for formatter in formatters:
+        choices.append((formatter, formatter))
+
+    widget = deform.widget.SelectWidget(values=choices)
+    widget.request = request
+
+    return widget
+
+@colander.deferred
+def markup_default(node, kw):
+    request = kw.get('request')
+
+    if not isinstance(request.context, RootFactory):
+        return request.context.markup
+
+
 class EntryAdminSchema(CSRFSchema):
 
     title = colander.SchemaNode(colander.String(),
@@ -86,10 +107,17 @@ class EntryAdminSchema(CSRFSchema):
         , missing = None
     )
 
+    markup = colander.SchemaNode(
+        colander.String()
+        , widget = markup_widget
+        , default = markup_default
+    )
+
     content = colander.SchemaNode(
         colander.String()
         , widget = deform.widget.RichTextWidget()
     )
+
     owner = colander.SchemaNode(
         colander.String()
         , widget = owner_widget
