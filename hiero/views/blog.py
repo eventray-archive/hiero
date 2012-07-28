@@ -123,7 +123,6 @@ class AdminEntryController(BaseController):
             entry.content = captured['content']
             entry.markup = captured['markup']
 
-            import pdb; pdb.set_trace()
             formatter = get_formatter(captured['markup'])
 
             if formatter:

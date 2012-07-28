@@ -3,7 +3,7 @@ from hiero.resources    import CategoryFactory
 from hiero.resources    import SeriesFactory
 
 def includeme(config):
-    config.add_route('hiero_entry_index',   '/')
+    config.add_route('hiero_entry_index',   '')
     config.add_route('hiero_entry_index_paged',   '/page/{page}')
     config.add_route('hiero_admin_index',   '/admin')
     config.add_route('hiero_admin_entry_index_paged',   '/admin/entries/page/{page}')
