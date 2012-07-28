@@ -1,5 +1,5 @@
-<%namespace name="render_entry" file="hiero:templates/blog_utilities.mako"/>
+<%namespace name="utils" file="hiero:templates/blog_utilities.mako"/>
 
 % for entry in entries:
-  ${render_entry(entry)}
+  ${utils.render_entry(entry)}
 % endfor
