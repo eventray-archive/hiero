@@ -233,7 +233,7 @@ class EntryMixin(BaseModel):
     @declared_attr
     def published_on(self):
         """ Date the entry was published """
-        return sa.Column(sa.TIMESTAMP(timezone=False))
+        return sa.Column(sa.DateTime(timezone=False))
 
     @declared_attr
     def tags(self):
