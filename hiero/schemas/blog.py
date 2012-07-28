@@ -37,7 +37,11 @@ def series_widget(node, kw):
     for series in Series.get_all(request):
         choices.append((str(series.pk), series.title))
 
-    return deform.widget.SelectWidget(values=choices)
+    widget = deform.widget.SelectWidget(values=choices,
+        template='hiero:templates/widgets/select_series')
+    widget.request = request
+
+    return widget
 
 @colander.deferred
 def series_default(node, kw):

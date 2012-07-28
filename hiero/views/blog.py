@@ -228,7 +228,7 @@ class AdminEntryController(BaseController):
     def create_series(self):
         schema = SeriesAdminSchema()
         schema = schema.bind(request=self.request)
-        form = HieroForm(schema)
+        form = HieroForm(self.request, schema)
 
         if self.request.method == 'GET':
             if isinstance(self.request.context, RootFactory):
