@@ -105,7 +105,6 @@ class CategoryMixin(BaseModel):
         return session.query(cls).filter(cls.slug == slug)
 
 
-# markup type
 class EntryMixin(BaseModel):
     @declared_attr
     def __tablename__(cls):
@@ -129,7 +128,7 @@ class EntryMixin(BaseModel):
     @declared_attr
     def markup(self):
         """ The markup format"""
-        return sa.Column(sa.Unicode(128), nullable=False, unique=True)
+        return sa.Column(sa.Unicode(128), nullable=False)
 
     @declared_attr
     def series_pk(self):
