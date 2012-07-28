@@ -16,7 +16,10 @@ def owner_widget(node, kw):
     for user in User.get_all(request):
         choices.append((str(user.pk), user.user_name))
 
-    return deform.widget.SelectWidget(values=choices)
+    widget = deform.widget.SelectWidget(values=choices,
+            template='hiero:templates/widgets/select_user')
+    widget.request = request
+    return widget
 
 @colander.deferred
 def owner_default(node, kw):
@@ -27,7 +30,7 @@ def owner_default(node, kw):
 
 @colander.deferred
 def series_widget(node, kw):
-    choices = []
+    choices = [('', '')]
     request = kw.get('request')
     Series = request.registry.getUtility(IHieroSeriesClass)
 
@@ -45,14 +48,20 @@ def series_default(node, kw):
 
 @colander.deferred
 def category_widget(node, kw):
-    choices = []
+    choices = [('', '')]
     request = kw.get('request')
-    Series = request.registry.getUtility(IHieroCategoryClass)
+    Category = request.registry.getUtility(IHieroCategoryClass)
 
     for category in Category.get_all(request):
         choices.append((str(category.pk), category.title))
 
-    return deform.widget.SelectWidget(values=choices)
+    widget = deform.widget.SelectWidget(values=choices,
+        template='hiero:templates/widgets/select_category'
+    )
+
+    widget.request = request
+
+    return widget
 
 @colander.deferred
 def category_default(node, kw):
@@ -92,8 +101,8 @@ class EntryAdminSchema(CSRFSchema):
 
     category = colander.SchemaNode(
         colander.String()
-        , widget = series_widget
-        , default = series_default
+        , widget = category_widget
+        , default = category_default
         , missing = None
     )
 

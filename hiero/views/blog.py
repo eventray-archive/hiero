@@ -94,7 +94,7 @@ class AdminEntryController(BaseController):
     def create_entry(self):
         schema = EntryAdminSchema()
         schema = schema.bind(request=self.request)
-        form = HieroForm(schema)
+        form = HieroForm(self.request, schema)
 
         if self.request.method == 'GET':
             if isinstance(self.request.context, RootFactory):
@@ -165,7 +165,7 @@ class AdminEntryController(BaseController):
     def create_category(self):
         schema = CategoryAdminSchema()
         schema = schema.bind(request=self.request)
-        form = HieroForm(schema)
+        form = HieroForm(self.request, schema)
 
         if self.request.method == 'GET':
             if isinstance(self.request.context, RootFactory):
