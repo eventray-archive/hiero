@@ -6,6 +6,7 @@ from hiero.forms            import HieroForm
 from hiero.formatters       import get_formatter
 from horus.resources        import RootFactory
 from pyramid.view           import view_config
+from pyramid.view           import view_defaults
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm.exc     import NoResultFound
 from pyramid.i18n           import TranslationStringFactory
@@ -101,21 +102,22 @@ class EntryController(BaseController):
         """ View that allows you to search entries """
         pass
 
+@view_defaults(permission='group:admin')
 class AdminEntryController(BaseController):
     @view_config(
-            route_name='hiero_admin_index'
-            , renderer='hiero:templates/admin/index.mako'
+        route_name='hiero_admin_index'
+        , renderer='hiero:templates/admin/index.mako'
     )
     def index(self):
         return {}
 
     @view_config(
-            route_name='hiero_admin_entry_index'
-            , renderer='hiero:templates/admin/entry_index.mako'
+        route_name='hiero_admin_entry_index'
+        , renderer='hiero:templates/admin/entry_index.mako'
     )
     @view_config(
-            route_name='hiero_admin_entry_index_paged'
-            , renderer='hiero:templates/admin/entry_index.mako'
+        route_name='hiero_admin_entry_index_paged'
+        , renderer='hiero:templates/admin/entry_index.mako'
     )
     def entry_index(self):
         """ View that lists and pages all the entries for admins """

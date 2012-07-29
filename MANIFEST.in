@@ -1,2 +1,6 @@
-include *.txt *.ini *.cfg *.rst
-recursive-include hiero *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
+global-exclude *.pyc
+global-exclude .DS_Store
+global-include test.ini
+include MANIFEST.in
+include *.mako
+include README.md
