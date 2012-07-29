@@ -31,20 +31,20 @@ requires = [
     , 'BeautifulSoup'
     , 'markdown'
     , 'docutils'
-    , 'hem==dev'
-    , 'horus==dev'
+    , 'hem'
+    , 'horus'
 ]
 
 setup(
     name='hiero'
-    , version='0.0'
+    , version='0.2'
     , description='hiero'
     , long_description=README + '\n\n' +  CHANGES
     , classifiers=[
         "Programming Language :: Python"
-        "Framework :: Pylons"
-        "Topic :: Internet :: WWW/HTTP"
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application"
+        , "Framework :: Pylons"
+        , "Topic :: Internet :: WWW/HTTP"
+        , "Topic :: Internet :: WWW/HTTP :: WSGI :: Application"
     ]
     , author='John Anderson'
     , author_email='sontek@gmail.com'
