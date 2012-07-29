@@ -14,8 +14,8 @@ def includeme(config):
            , factory=EntryFactory
            , traverse="/{slug}"
     )
-    config.add_route('hiero_entry_detail',   '{slug}')
-    config.add_route('hiero_entry_search',   '{term}')
+    config.add_route('hiero_entry_detail',   '/detail/{slug}')
+    config.add_route('hiero_entry_search',   '/search/{term}')
 
     config.add_route('hiero_admin_category_index_paged',
             '/admin/categories/page/{page}')
