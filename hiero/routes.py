@@ -4,11 +4,12 @@ from hiero.resources    import SeriesFactory
 
 def includeme(config):
     # non-admin routes
-    config.add_route('hiero_entry_index',   '')
-    config.add_route('hiero_entry_index_paged',   '/page/{page}')
-    config.add_route('hiero_entry_detail',   '/detail/{slug}')
-    config.add_route('hiero_entry_search',   '/search/{term}')
-    config.add_route('hiero_entry_category',   '/category/{slug}')
+    config.add_route('hiero_entry_index',       '')
+    config.add_route('hiero_entry_index_paged', '/page/{page}')
+    config.add_route('hiero_entry_detail',      '/detail/{slug}')
+    config.add_route('hiero_entry_search',      '/search/{term}')
+    config.add_route('hiero_entry_category',    '/category/{slug}')
+    config.add_route('hiero_entry_series',      '/series/{slug}')
 
     # admin routes
     config.add_route('hiero_admin_index',   '/admin')
