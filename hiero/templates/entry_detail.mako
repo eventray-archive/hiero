@@ -1,4 +1,3 @@
-<%namespace name="entry_tmpl" file="hiero:templates/blog_index.mako" />
+<%namespace name="utils" file="hiero:templates/blog_utilities.mako" />
 
-${entry_tmpl.render_entry(entry)}
-
+${utils.render_entry(entry)}
