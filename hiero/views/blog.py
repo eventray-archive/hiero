@@ -18,19 +18,41 @@ _ = TranslationStringFactory('hiero')
 
 class EntryController(BaseController):
     @view_config(
-            route_name='hiero_entry_index'
-            , renderer='hiero:templates/blog_index.mako'
+        route_name='hiero_entry_index'
+        , renderer='hiero:templates/blog_index.mako'
     )
     @view_config(
-            route_name='hiero_entry_index_paged'
-            , renderer='hiero:templates/blog_index.mako'
+        route_name='hiero_entry_index_paged'
+        , renderer='hiero:templates/blog_index.mako'
     )
     def index(self):
         """ View that lists and pages all the entries """
         page = int(self.request.matchdict.get('page', 1))
 
         query = self.Entry.get_all_active(self.request, page=page)
-        return {'entries': query.all()}
+
+        return {
+            'entries': query.all()
+        }
+
+    @view_config(
+        route_name='hiero_entry_category'
+        , renderer='hiero:templates/blog_index.mako'
+    )
+    def category_index(self):
+        """ View that lists and pages all the entries 
+        for a specific category 
+        """
+        page = int(self.request.matchdict.get('page', 1))
+        slug = self.request.matchdict.get('slug')
+
+        query = self.Entry.get_all_active(self.request, page=page)
+        query = query.join(self.Category)
+        query = query.filter(self.Category.slug == slug)
+
+        return {
+            'entries': query.all()
+        }
 
 
     @view_config(

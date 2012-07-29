@@ -32,8 +32,11 @@ def includeme(config):
 
 
 def add_renderer_globals(event):
-  event['stylesheet_link_tag'] = stylesheet_link_tag
-  event['script_tag'] = script_tag
+    event['stylesheet_link_tag'] = stylesheet_link_tag
+    event['script_tag'] = script_tag
+    request = event['request']
+    cat_class = request.registry.getUtility(IHieroCategoryClass)
+    event['categories'] = cat_class.get_all(request)
 
 def stylesheet_link_tag(request, url):
   full_url = request.static_url("hiero:static%s" % url)
@@ -42,4 +45,3 @@ def stylesheet_link_tag(request, url):
 def script_tag(request, url):
   full_url = request.static_url("hiero:static%s" % url)
   return "<script type=\"text/javascript\" src=\"%s\" charset=\"utf-8\" ></script>" % full_url
-
