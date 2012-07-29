@@ -115,7 +115,7 @@ class EntryAdminSchema(CSRFSchema):
 
     content = colander.SchemaNode(
         colander.String()
-        , widget = deform.widget.TextAreaWidget()
+        , widget = deform.widget.TextAreaWidget(rows=25, css_class='content')
     )
 
     owner = colander.SchemaNode(

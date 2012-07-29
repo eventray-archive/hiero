@@ -6,4 +6,4 @@ class MarkdownFormatter(object):
         self.text = text
 
     def get_html(self):
-        return markdown.markdown(self.text, ['codehilite'])
+        return markdown.markdown(self.text, ['codehilite(force_linenos=False)'])
