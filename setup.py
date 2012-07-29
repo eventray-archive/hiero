@@ -37,7 +37,7 @@ requires = [
 
 setup(
     name='hiero'
-    , version='0.2'
+    , version='0.3'
     , description='hiero'
     , long_description=README + '\n\n' +  CHANGES
     , classifiers=[
