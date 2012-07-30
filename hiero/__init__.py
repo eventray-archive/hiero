@@ -36,7 +36,11 @@ def add_renderer_globals(event):
     event['script_tag'] = script_tag
     request = event['request']
     cat_class = request.registry.getUtility(IHieroCategoryClass)
+    ser_class = request.registry.getUtility(IHieroSeriesClass)
+    ent_class = request.registry.getUtility(IHieroEntryClass)
     event['categories'] = cat_class.get_all(request)
+    event['series'] = ser_class.get_all(request)
+    event['recent_entries'] = ent_class.get_all_active(request, limit=5)
 
 def stylesheet_link_tag(request, url):
   full_url = request.static_url("hiero:static%s" % url)

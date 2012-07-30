@@ -57,6 +57,25 @@ class EntryController(BaseController):
 
 
     @view_config(
+        route_name='hiero_entry_series'
+        , renderer='hiero:templates/blog_index.mako'
+    )
+    def series_index(self):
+        """ View that lists and pages all the entries 
+        in a series 
+        """
+        page = int(self.request.matchdict.get('page', 1))
+        slug = self.request.matchdict.get('slug')
+
+        query = self.Entry.get_all_active(self.request, page=page)
+        query = query.join(self.Series)
+        query = query.filter(self.Slug.slug == slug)
+
+        return {
+            'entries': query.all()
+        }
+
+    @view_config(
         route_name='hiero_entry_detail'
         , renderer='hiero:templates/entry_detail.mako'
     )
