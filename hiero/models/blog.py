@@ -258,13 +258,28 @@ class EntryMixin(BaseModel):
         )
 
     @classmethod
+    def get_all(cls, request, page=None, limit=None):
+        session = get_session(request)
+
+        query = session.query(cls)
+        query = query.order_by(cls.published_on.desc())
+
+        if limit:
+            query = query.limit(limit)
+
+        if page and limit:
+            offset = (page - 1) * limit
+            query = query.offset(offset)
+
+        return query
+
+    @classmethod
     def get_all_active(cls, request, page=1, limit=10):
         """Gets all active entries"""
         session = get_session(request)
 
         query = cls.get_all(request, page=page, limit=limit)
         query = query.from_self().filter(cls.is_published == True)
-        query.order_by(cls.published_on)
 
         return query
 
