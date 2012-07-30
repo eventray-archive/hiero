@@ -34,6 +34,7 @@ class EntryController(BaseController):
 
         return {
             'entries': query.all()
+            , 'page': page
         }
 
     @view_config(
@@ -53,6 +54,7 @@ class EntryController(BaseController):
 
         return {
             'entries': query.all()
+            , 'page': page
         }
 
 
