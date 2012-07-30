@@ -159,7 +159,9 @@ class AdminEntryController(BaseController):
             entry.is_featured = captured['is_featured']
             entry.is_published = captured['is_published']
             entry.enable_comments = captured['enable_comments']
-            entry.published_on = captured['published_on']
+            published_on = captured['published_on']
+            entry.published_on = published_on.replace(tzinfo=None)
+
 
             if captured['slug']:
                 entry.slug = captured['slug']
