@@ -1,8 +1,4 @@
-from hem.text                   import pluralize
-from sqlalchemy.ext.declarative import declared_attr
-
 import horus.models
-import sqlalchemy as sa
 
 ENTRY_ASSOCIATION_TABLE_NAME = 'entry_association'
 ENTRY_TAG_TABLE_NAME = 'entry_tag'

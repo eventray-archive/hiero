@@ -18,9 +18,9 @@ class EntryAssociationMixin(BaseModel):
         return ENTRY_ASSOCIATION_TABLE_NAME
 
     @declared_attr
-    def parent_entry_pk(self):
+    def parent_entry_id(self):
         return sa.Column(sa.Integer
-                , sa.ForeignKey('%s.pk' % ENTRY_TABLE_NAME
+                , sa.ForeignKey('%s.id' % ENTRY_TABLE_NAME
                     , onupdate='CASCADE'
                     , ondelete='CASCADE'
                 )
@@ -28,9 +28,9 @@ class EntryAssociationMixin(BaseModel):
         )
 
     @declared_attr
-    def related_entry_pk(self):
+    def related_entry_id(self):
         return sa.Column(sa.Integer
-                , sa.ForeignKey('%s.pk' % ENTRY_TABLE_NAME
+                , sa.ForeignKey('%s.id' % ENTRY_TABLE_NAME
                     , onupdate='CASCADE'
                     , ondelete='CASCADE'
                 )
@@ -43,9 +43,9 @@ class EntryTagMixin(BaseModel):
         return ENTRY_TAG_ASSOCIATION_TABLE_NAME
 
     @declared_attr
-    def tag_pk(self):
+    def tag_id(self):
         return sa.Column(sa.Integer
-                , sa.ForeignKey('%s.pk' % ENTRY_TAG_TABLE_NAME
+                , sa.ForeignKey('%s.id' % ENTRY_TAG_TABLE_NAME
                     , onupdate='CASCADE'
                     , ondelete='CASCADE'
                 )
@@ -53,9 +53,9 @@ class EntryTagMixin(BaseModel):
         )
 
     @declared_attr
-    def entry_pk(self):
+    def entry_id(self):
         return sa.Column(sa.Integer
-                , sa.ForeignKey('%s.pk' % ENTRY_TABLE_NAME
+                , sa.ForeignKey('%s.id' % ENTRY_TABLE_NAME
                     , onupdate='CASCADE'
                     , ondelete='CASCADE'
                 )
@@ -111,10 +111,10 @@ class EntryMixin(BaseModel):
         return ENTRY_TABLE_NAME
 
     @declared_attr
-    def owner_pk(self):
+    def owner_id(self):
         return sa.Column(
             sa.Integer
-            , sa.ForeignKey('%s.pk' % UserMixin.__tablename__)
+            , sa.ForeignKey('%s.id' % UserMixin.__tablename__)
             , nullable=False
         )
 
@@ -131,10 +131,10 @@ class EntryMixin(BaseModel):
         return sa.Column(sa.Unicode(128))
 
     @declared_attr
-    def series_pk(self):
+    def series_id(self):
         return sa.Column(
             sa.Integer,
-            sa.ForeignKey('%s.pk' % SERIES_TABLE_NAME)
+            sa.ForeignKey('%s.id' % SERIES_TABLE_NAME)
         )
 
     @declared_attr
@@ -145,10 +145,10 @@ class EntryMixin(BaseModel):
         )
 
     @declared_attr
-    def category_pk(self):
+    def category_id(self):
         return sa.Column(
             sa.Integer
-            , sa.ForeignKey('%s.pk' % CategoryMixin.__tablename__)
+            , sa.ForeignKey('%s.id' % CategoryMixin.__tablename__)
         )
 
     @declared_attr
@@ -253,8 +253,8 @@ class EntryMixin(BaseModel):
             , secondary=ENTRY_ASSOCIATION_TABLE_NAME
             , passive_deletes=True
             , passive_updates=True
-            , primaryjoin='Entry.pk == EntryAssociation.parent_entry_pk'
-            , secondaryjoin='Entry.pk == EntryAssociation.related_entry_pk'
+            , primaryjoin='Entry.id == EntryAssociation.parent_entry_id'
+            , secondaryjoin='Entry.id == EntryAssociation.related_entry_id'
         )
 
     @classmethod

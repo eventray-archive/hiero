@@ -5,11 +5,11 @@ from pyramid                import testing
 class TestViewController(BaseTestCase):
     def test_init(self):
         from hem.db                 import IDBSession
-        from horus.interfaces       import IHorusUserClass
-        from horus.interfaces       import IHorusActivationClass
+        from horus.interfaces       import IUserClass
+        from horus.interfaces       import IActivationClass
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 
         request = testing.DummyRequest()

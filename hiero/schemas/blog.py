@@ -1,6 +1,6 @@
 from hem.schemas        import CSRFSchema
 from horus.resources    import RootFactory
-from horus.interfaces   import IHorusUserClass
+from horus.interfaces   import IUserClass
 from hiero.interfaces   import IHieroSeriesClass
 from hiero.interfaces   import IHieroCategoryClass
 
@@ -11,7 +11,7 @@ import deform
 def owner_widget(node, kw):
     choices = [('', '')]
     request = kw.get('request')
-    User = request.registry.getUtility(IHorusUserClass)
+    User = request.registry.getUtility(IUserClass)
 
     for user in User.get_all(request):
         choices.append((str(user.pk), user.user_name))

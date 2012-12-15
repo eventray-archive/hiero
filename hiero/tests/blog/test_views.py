@@ -7,15 +7,15 @@ class TestBlogController(BaseTestCase):
     def test_index_inactive(self):
         from hem.db                 import IDBSession
         from hiero.views.blog       import EntryController
-        from horus.interfaces       import IHorusUserClass
-        from horus.interfaces       import IHorusActivationClass
+        from horus.interfaces       import IUserClass
+        from horus.interfaces       import IActivationClass
         from hiero.interfaces       import IHieroEntryClass
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 
@@ -52,15 +52,15 @@ class TestBlogController(BaseTestCase):
     def test_index_active(self):
         from hem.db                 import IDBSession
         from hiero.views.blog       import EntryController
-        from horus.interfaces       import IHorusUserClass
-        from horus.interfaces       import IHorusActivationClass
+        from horus.interfaces       import IUserClass
+        from horus.interfaces       import IActivationClass
         from hiero.interfaces       import IHieroEntryClass
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 
@@ -99,15 +99,15 @@ class TestBlogController(BaseTestCase):
     def test_index_active_paging(self):
         from hem.db                 import IDBSession
         from hiero.views.blog       import EntryController
-        from horus.interfaces       import IHorusUserClass
-        from horus.interfaces       import IHorusActivationClass
+        from horus.interfaces       import IUserClass
+        from horus.interfaces       import IActivationClass
         from hiero.interfaces       import IHieroEntryClass
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 
@@ -154,15 +154,15 @@ class TestBlogController(BaseTestCase):
     def test_detail(self):
         from hem.db                 import IDBSession
         from hiero.views.blog       import EntryController
-        from horus.interfaces       import IHorusUserClass
-        from horus.interfaces       import IHorusActivationClass
+        from horus.interfaces       import IUserClass
+        from horus.interfaces       import IActivationClass
         from hiero.interfaces       import IHieroEntryClass
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 

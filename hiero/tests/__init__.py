@@ -9,8 +9,8 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization  import ACLAuthorizationPolicy
 from pyramid.response       import Response
 from hem.interfaces         import IDBSession
-from horus.interfaces       import IHorusUserClass
-from horus.interfaces       import IHorusActivationClass
+from horus.interfaces       import IUserClass
+from horus.interfaces       import IActivationClass
 from hiero.interfaces       import IHieroEntryClass
 from hiero.tests.models     import Base
 from hiero.tests.models     import User
@@ -42,8 +42,8 @@ class BaseTestCase(unittest.TestCase):
         self.session = self.Session(bind=connection)
 
         self.config.registry.registerUtility(self.session, IDBSession)
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
 
         Base.metadata.bind=connection
@@ -63,8 +63,8 @@ class IntegrationTestBase(unittest.TestCase):
         config = global_config
         config.add_settings(settings)
 
-        self.config.registry.registerUtility(Activation, IHorusActivationClass)
-        self.config.registry.registerUtility(User, IHorusUserClass)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
 
         authz_policy = ACLAuthorizationPolicy()
         config.set_authorization_policy(authz_policy)
