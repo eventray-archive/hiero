@@ -10,6 +10,6 @@
                          class field.widget.css_class"
          value="${value}">${description}</option>
 </select>
-<a href="${field.widget.request.route_url('horus_admin_users_create')}">+</a>
+<a href="${field.widget.request.route_url('admin_users_create')}">+</a>
 <input type="hidden" name="__end__" value="${field.name}:sequence"
   tal:condition="field.widget.multiple" />
