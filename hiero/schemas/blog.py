@@ -14,7 +14,7 @@ def owner_widget(node, kw):
     User = request.registry.getUtility(IUserClass)
 
     for user in User.get_all(request):
-        choices.append((str(user.pk), user.user_name))
+        choices.append((str(user.id), user.username))
 
     widget = deform.widget.SelectWidget(values=choices,
             template='hiero:templates/widgets/select_user')
@@ -26,7 +26,7 @@ def owner_default(node, kw):
     request = kw.get('request')
 
     if not isinstance(request.context, RootFactory):
-        return request.context.owner_pk
+        return request.context.owner_id
 
 @colander.deferred
 def series_widget(node, kw):
@@ -35,7 +35,7 @@ def series_widget(node, kw):
     Series = request.registry.getUtility(IHieroSeriesClass)
 
     for series in Series.get_all(request):
-        choices.append((str(series.pk), series.title))
+        choices.append((str(series.id), series.title))
 
     widget = deform.widget.SelectWidget(values=choices,
         template='hiero:templates/widgets/select_series')
@@ -48,7 +48,7 @@ def series_default(node, kw):
     request = kw.get('request')
 
     if not isinstance(request.context, RootFactory):
-        return request.context.series_pk
+        return request.context.series_id
 
 @colander.deferred
 def category_widget(node, kw):
@@ -57,7 +57,7 @@ def category_widget(node, kw):
     Category = request.registry.getUtility(IHieroCategoryClass)
 
     for category in Category.get_all(request):
-        choices.append((str(category.pk), category.title))
+        choices.append((str(category.id), category.title))
 
     widget = deform.widget.SelectWidget(values=choices,
         template='hiero:templates/widgets/select_category'
@@ -72,7 +72,7 @@ def category_default(node, kw):
     request = kw.get('request')
 
     if not isinstance(request.context, RootFactory):
-        return request.context.category_pk
+        return request.context.category_id
 
 @colander.deferred
 def markup_widget(node, kw):

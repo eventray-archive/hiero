@@ -10,21 +10,27 @@ class TestBlogController(BaseTestCase):
         from horus.interfaces       import IUserClass
         from horus.interfaces       import IActivationClass
         from hiero.interfaces       import IHieroEntryClass
+        from hiero.interfaces       import IHieroCategoryClass
+        from hiero.interfaces       import IHieroSeriesClass
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
+        from hiero.tests.models     import Category
+        from hiero.tests.models     import Series
 
         self.config.registry.registerUtility(Activation, IActivationClass)
         self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
+        self.config.registry.registerUtility(Category, IHieroCategoryClass)
+        self.config.registry.registerUtility(Series, IHieroSeriesClass)
         self.config.registry.registerUtility(self.session, IDBSession)
 
         self.config.add_route('hiero_entry_index', '/')
 
         request = testing.DummyRequest()
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         self.session.add(owner)
 
@@ -58,7 +64,13 @@ class TestBlogController(BaseTestCase):
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
+        from hiero.tests.models     import Series
+        from hiero.tests.models     import Category
+        from hiero.interfaces       import IHieroCategoryClass
+        from hiero.interfaces       import IHieroSeriesClass
 
+        self.config.registry.registerUtility(Category, IHieroCategoryClass)
+        self.config.registry.registerUtility(Series, IHieroSeriesClass)
         self.config.registry.registerUtility(Activation, IActivationClass)
         self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
@@ -68,8 +80,8 @@ class TestBlogController(BaseTestCase):
 
         request = testing.DummyRequest()
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+                password='foo')
 
         self.session.add(owner)
 
@@ -105,11 +117,18 @@ class TestBlogController(BaseTestCase):
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
+        from hiero.tests.models     import Category
+        from hiero.tests.models     import Series
+        from hiero.interfaces       import IHieroCategoryClass
+        from hiero.interfaces       import IHieroSeriesClass
 
-        self.config.registry.registerUtility(Activation, IActivationClass)
-        self.config.registry.registerUtility(User, IUserClass)
+        self.config.registry.registerUtility(Category, IHieroCategoryClass)
+        self.config.registry.registerUtility(Series, IHieroSeriesClass)
+
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
         self.config.registry.registerUtility(self.session, IDBSession)
+        self.config.registry.registerUtility(Activation, IActivationClass)
+        self.config.registry.registerUtility(User, IUserClass)
 
         self.config.add_route('hiero_entry_index', '/')
 
@@ -122,8 +141,8 @@ class TestBlogController(BaseTestCase):
 
         request.matchdict.get = get
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+                password='foo')
 
         self.session.add(owner)
 
@@ -148,8 +167,8 @@ class TestBlogController(BaseTestCase):
         result_entries = results['entries']
 
         assert len(result_entries) == 10
-        assert entries[12].title == result_entries[2].title
-        assert not entries[0] in result_entries
+        assert entries[0].title == result_entries[9].title
+        assert not entries[12] in result_entries
 
     def test_detail(self):
         from hem.db                 import IDBSession
@@ -160,6 +179,13 @@ class TestBlogController(BaseTestCase):
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
         from hiero.tests.models     import Activation
+        from hiero.tests.models     import Category
+        from hiero.tests.models     import Series
+        from hiero.interfaces       import IHieroCategoryClass
+        from hiero.interfaces       import IHieroSeriesClass
+
+        self.config.registry.registerUtility(Category, IHieroCategoryClass)
+        self.config.registry.registerUtility(Series, IHieroSeriesClass)
 
         self.config.registry.registerUtility(Activation, IActivationClass)
         self.config.registry.registerUtility(User, IUserClass)
@@ -171,8 +197,8 @@ class TestBlogController(BaseTestCase):
         request = testing.DummyRequest()
         request.matchdict = Mock()
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         self.session.add(owner)
 
@@ -208,8 +234,8 @@ class TestBlogIntegrationViews(IntegrationTestBase):
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
 
         entry = Entry(owner=owner, title='test entry', content='hi',
@@ -234,8 +260,8 @@ class TestBlogIntegrationViews(IntegrationTestBase):
         from hiero.tests.models     import User
         from hiero.tests.models     import Entry
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+                password='foo')
 
 
         entry = Entry(owner=owner, title='test entry', content='hi',
@@ -246,6 +272,6 @@ class TestBlogIntegrationViews(IntegrationTestBase):
         self.session.add(entry)
         self.session.flush()
 
-        res = self.app.get('/test-entry')
+        res = self.app.get('/detail/test-entry')
         assert res.status_int == 200
         assert 'hi' in res.body

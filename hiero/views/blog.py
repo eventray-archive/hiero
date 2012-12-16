@@ -148,7 +148,8 @@ class AdminEntryController(BaseController):
             else:
                 return dict(
                     form=form,
-                    appstruct = self.request.context.__json__()
+                    appstruct = self.request.context.__json__(self.request,
+                        convert_date=False)
                 )
         else:
             try:
@@ -164,7 +165,7 @@ class AdminEntryController(BaseController):
                 entry = self.request.context
 
             entry.title = captured['title']
-            entry.owner_pk = captured['owner']
+            entry.owner_id = captured['owner']
             entry.content = captured['content']
             entry.markup = captured['markup']
 

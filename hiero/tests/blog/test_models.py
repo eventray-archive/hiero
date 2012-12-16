@@ -3,6 +3,7 @@ from sqlalchemy.types   import DateTime
 from sqlalchemy         import Column
 from datetime           import datetime
 from hiero.tests.models import Base
+from pyramid            import testing
 
 class TestModel(Base):
     start_date = Column(DateTime)
@@ -14,21 +15,22 @@ class TestModels(BaseTestCase):
 
     def test_json(self):
         model = TestModel()
-        model.pk = 1
+        model.id = 1
         model.start_date = datetime.now()
 
-        assert model.__json__() == {'pk': 1, 'start_date': model.start_date.isoformat()}
+        request = testing.DummyRequest()
+        assert model.__json__(request) == {'id': 1, 'start_date': model.start_date.isoformat()}
 
 class TestEntry(BaseTestCase):
     def test_create_entry(self):
         from hiero.tests.models import User
         from hiero.tests.models import Entry
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
         self.session.add(owner)
         self.session.flush()
 
-        entry = Entry(owner_pk=owner.pk, title='test entry', content='hi',
+        entry = Entry(owner_id=owner.id, title='test entry', content='hi',
             html_content='hi<br />'
         )
 
@@ -47,8 +49,8 @@ class TestEntry(BaseTestCase):
         from hiero.tests.models import Entry
         from hiero.tests.models import Tag
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         entry = Entry(owner=owner, title='test entry', content='hi',
             html_content='hi<br />'
@@ -71,8 +73,8 @@ class TestEntry(BaseTestCase):
         from hiero.tests.models import User
         from hiero.tests.models import Entry
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         entry = Entry(owner=owner, title='test entry', content='hi',
             html_content='hi<br />'
@@ -102,8 +104,8 @@ class TestEntry(BaseTestCase):
         from hiero.tests.models import Entry
         from hiero.tests.models import Series
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         entry = Entry(owner=owner, title='test entry', content='hi',
             html_content='hi<br />'
@@ -139,8 +141,8 @@ class TestEntry(BaseTestCase):
         from hiero.tests.models import Entry
         from hiero.tests.models import Category
 
-        owner = User(user_name='sontek', email='sontek@gmail.com')
-        owner.set_password('foo')
+        owner = User(username='sontek', email='sontek@gmail.com',
+            password='foo')
 
         entry = Entry(owner=owner, title='test entry', content='hi',
             html_content='hi<br />'

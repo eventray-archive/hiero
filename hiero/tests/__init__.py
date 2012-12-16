@@ -7,7 +7,6 @@ from pkg_resources          import resource_filename
 from pyramid                import testing
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization  import ACLAuthorizationPolicy
-from pyramid.response       import Response
 from hem.interfaces         import IDBSession
 from horus.interfaces       import IUserClass
 from horus.interfaces       import IActivationClass
