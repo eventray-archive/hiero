@@ -1,16 +1,18 @@
-from hiero.views            import BaseController
-from hiero.schemas.blog     import EntryAdminSchema
-from hiero.schemas.blog     import CategoryAdminSchema
-from hiero.schemas.blog     import SeriesAdminSchema
-from hiero.forms            import HieroForm
-from hiero.formatters       import get_formatter
-from horus.resources        import RootFactory
-from pyramid.view           import view_config
-from pyramid.view           import view_defaults
-from pyramid.httpexceptions import HTTPFound
-from pyramid.httpexceptions import HTTPNotFound
-from sqlalchemy.orm.exc     import NoResultFound
-from pyramid.i18n           import TranslationStringFactory
+from hiero.views                import BaseController
+from hiero.schemas.blog         import EntryAdminSchema
+from hiero.schemas.blog         import CategoryAdminSchema
+from hiero.schemas.blog         import SeriesAdminSchema
+from hiero.forms                import HieroForm
+from hiero.formatters           import get_formatter
+from horus.resources            import RootFactory
+from pyramid.view               import view_config
+from pyramid.view               import view_defaults
+from pyramid.httpexceptions     import HTTPFound
+from pyramid.httpexceptions     import HTTPNotFound
+from sqlalchemy.orm.exc         import NoResultFound
+from sqlalchemy.sql.expression  import func
+from pyramid.i18n               import TranslationStringFactory
+from datetime                   import datetime
 import deform
 import logging
 
@@ -321,3 +323,43 @@ class AdminEntryController(BaseController):
             return HTTPFound(
                 location=self.request.route_url('hiero_admin_series_index')
             )
+
+class RSSController(BaseController):
+    def get_rss_data(self, entries):
+        return {
+            'title': 'sontek.net'
+            , 'description': 'the best site in the universe'
+            , 'link': 'http://sontek.net'
+            , 'language': 'en'
+            , 'copyright': '2012 sontek'
+            , 'pub_date': datetime.utcnow()
+            , 'last_build_date': datetime.utcnow()
+            , 'ttl': 60
+            , 'entries': entries
+        }
+
+    @view_config(
+        route_name='hiero_entry_rss'
+        , renderer='hiero:templates/rss.mako'
+    )
+    def rss(self):
+        query = self.Entry.get_all_active(self.request)
+        entries = query.all()
+
+        return self.get_rss_data(entries)
+
+
+    @view_config(
+        route_name='hiero_entry_rss_category'
+        , renderer='hiero:templates/rss.mako'
+    )
+    def rss_category(self):
+        category = func.lower(self.request.matchdict['category'])
+        query = self.Entry.get_all_active(self.request)
+        query = query.join(self.Category)
+        query = query.filter(
+            func.lower(self.Category.title) ==  category
+        )
+        entries = query.all()
+
+        return self.get_rss_data(entries)

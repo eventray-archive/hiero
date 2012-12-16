@@ -217,6 +217,11 @@ class EntryMixin(BaseModel):
         """ The HTML content of the entry"""
         return sa.Column(sa.UnicodeText, nullable=False)
 
+   # @declared_attr
+   # def rss_description(self):
+   #     """ Will default to HTML content if not filled out """
+   #     return sa.Column(sa.UnicodeText())
+
     @declared_attr
     def title(self):
         """ Unique title for the entry """
