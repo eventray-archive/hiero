@@ -8,6 +8,7 @@ from horus.resources        import RootFactory
 from pyramid.view           import view_config
 from pyramid.view           import view_defaults
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy.orm.exc     import NoResultFound
 from pyramid.i18n           import TranslationStringFactory
 import deform
@@ -93,7 +94,7 @@ class EntryController(BaseController):
                 return dict(entry=result)
             except NoResultFound as exc:
                 logger.debug('Could not find slug %s' % slug)
-                raise
+                raise HTTPNotFound()
 
 
     @view_config(
