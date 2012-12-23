@@ -1,6 +1,7 @@
 <%inherit file="hiero:templates/layout.mako"/>
 
 <a href="${request.route_url('hiero_admin_entry_create')}">New Entry</a> | 
+<a href="${request.route_url('hiero_admin_tag_create')}">New Tag</a> | 
 <a href="${request.route_url('hiero_admin_category_create')}">New Category</a> |
 <a href="${request.route_url('hiero_admin_series_create')}">New Series</a>
 

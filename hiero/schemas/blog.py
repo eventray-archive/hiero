@@ -1,8 +1,11 @@
-from hem.schemas        import CSRFSchema
-from horus.resources    import RootFactory
-from horus.interfaces   import IUserClass
-from hiero.interfaces   import IHieroSeriesClass
-from hiero.interfaces   import IHieroCategoryClass
+from hem.schemas             import CSRFSchema
+from hem.db                  import get_session
+from horus.resources         import RootFactory
+from horus.interfaces        import IUserClass
+from hiero.interfaces        import IHieroSeriesClass
+from hiero.interfaces        import IHieroCategoryClass
+from hiero.interfaces        import IHieroTagClass
+from deform_bootstrap.widget import ChosenMultipleWidget
 
 import colander
 import deform
@@ -94,6 +97,21 @@ def markup_default(node, kw):
     if not isinstance(request.context, RootFactory):
         return request.context.markup
 
+@colander.deferred
+def tag_widget(node, kw):
+    choices = []
+    request = kw.get('request')
+    session = get_session(request)
+
+    Tag = request.registry.getUtility(IHieroTagClass)
+    tags = session.query(Tag).all()
+
+    for tag in tags:
+        choices.append((str(tag.pk), tag.title))
+
+    return ChosenMultipleWidget(values=choices)
+
+
 
 class EntryAdminSchema(CSRFSchema):
 
@@ -137,6 +155,12 @@ class EntryAdminSchema(CSRFSchema):
         , default = category_default
         , missing = None
     )
+
+    tags = colander.SchemaNode(
+        deform.Set(),
+        widget=tag_widget,
+#        default=language_default,
+        title='Tags')
 
     is_featured = colander.SchemaNode(
         colander.Boolean()

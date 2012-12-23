@@ -10,14 +10,16 @@ def includeme(config):
     config.add_route('hiero_entry_search',       '/search/{term}')
     config.add_route('hiero_entry_category',     '/category/{slug}')
     config.add_route('hiero_entry_series',       '/series/{slug}')
-    config.add_route('hiero_entry_rss',          '/rss')
-    config.add_route('hiero_entry_rss_category', '/rss/{category}')
+    config.add_route('hiero_entry_rss',          '/rss/index.rss')
+    config.add_route('hiero_entry_rss_category', '/rss/category/{category}.rss')
+    config.add_route('hiero_entry_rss_tag',      '/rss/tag/{category}.rss')
 
     # admin routes
     config.add_route('hiero_admin_index',   '/admin')
     config.add_route('hiero_admin_entry_index_paged',   '/admin/entries/page/{page}')
     config.add_route('hiero_admin_entry_index',   '/admin/entries')
     config.add_route('hiero_admin_entry_create',   '/admin/entries/new')
+    config.add_route('hiero_admin_tag_create',   '/admin/tags/new')
     config.add_route('hiero_admin_entry_edit'
            , '/admin/entries/{slug}/edit'
            , factory=EntryFactory

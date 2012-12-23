@@ -8,3 +8,6 @@ class IHieroSeriesClass(Interface):
 
 class IHieroCategoryClass(Interface):
     pass
+
+class IHieroTagClass(Interface):
+    pass

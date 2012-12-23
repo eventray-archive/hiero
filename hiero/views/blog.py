@@ -20,6 +20,11 @@ logger = logging.getLogger(__name__)
 
 _ = TranslationStringFactory('hiero')
 
+def rss_content_type(info, request):
+    request.response.content_type = 'application/rss+xml'
+
+    return True
+
 class EntryController(BaseController):
     @view_config(
         route_name='hiero_entry_index'
@@ -179,8 +184,8 @@ class AdminEntryController(BaseController):
             else:
                 entry.html_content = entry.content
 
-            entry.category_pk = captured['category']
-            entry.series_pk = captured['series']
+            entry.category_id = captured['category']
+            entry.series_id = captured['series']
             entry.is_featured = captured['is_featured']
             entry.is_published = captured['is_published']
             entry.enable_comments = captured['enable_comments']
@@ -192,6 +197,8 @@ class AdminEntryController(BaseController):
                 entry.slug = captured['slug']
 
             self.session.add(entry)
+
+            self.session.flush()
 
             self.request.session.flash(_(u'The entry was created'), 'success')
 
@@ -261,6 +268,55 @@ class AdminEntryController(BaseController):
                 location=self.request.route_url('hiero_admin_category_index')
             )
 
+#    @view_config(
+#            route_name='hiero_admin_tag_create'
+#            , renderer='hiero:templates/admin/edit_tag.mako'
+#    )
+#    @view_config(
+#            route_name='hiero_admin_tag_edit'
+#            , renderer='hiero:templates/admin/edit_tag.mako'
+#    )
+#    def create_tag(self):
+#        schema = TagAdminSchema()
+#        schema = schema.bind(request=self.request)
+#        form = HieroForm(self.request, schema)
+#
+#        if self.request.method == 'GET':
+#            if isinstance(self.request.context, RootFactory):
+#                return dict(form=form)
+#            else:
+#                return dict(
+#                    form=form,
+#                    appstruct = self.request.context.__json__()
+#                )
+#        else:
+#            try:
+#                controls = self.request.POST.items()
+#                captured = form.validate(controls)
+#            except deform.ValidationFailure, e:
+#                return dict(form=e, errors=e.error.children)
+#
+#
+#            if isinstance(self.request.context, RootFactory):
+#                category = self.Category()
+#            else:
+#                category = self.request.context
+#
+#            category.title = captured['title']
+#
+#            if captured['slug']:
+#                category.slug = captured['slug']
+#
+#            self.session.add(category)
+#
+#            self.request.session.flash(_(u'The category was created'), 'success')
+#
+#            return HTTPFound(
+#                location=self.request.route_url('hiero_admin_category_index')
+#            )
+#
+#
+#
 
     @view_config(
             route_name='hiero_admin_series_index'
@@ -326,15 +382,24 @@ class AdminEntryController(BaseController):
 
 class RSSController(BaseController):
     def get_rss_data(self, entries):
+        settings = self.request.registry.settings
+
+        title = settings.get('hiero.rss_title', 'Set .ini, hiero.rss_title')
+        description = settings.get('hiero.rss_description', '')
+        link = settings.get('rss_link', self.request.host_url)
+        lang = settings.get('rss_lang', 'en')
+        copyright = settings.get('rss_copyright', '')
+        ttl = settings.get('rss_ttl', 60)
+
         return {
-            'title': 'sontek.net'
-            , 'description': 'the best site in the universe'
-            , 'link': 'http://sontek.net'
-            , 'language': 'en'
-            , 'copyright': '2012 sontek'
+            'title': title
+            , 'description': description
+            , 'link': link
+            , 'language': lang
+            , 'copyright': copyright
             , 'pub_date': datetime.utcnow()
             , 'last_build_date': datetime.utcnow()
-            , 'ttl': 60
+            , 'ttl': ttl
             , 'entries': entries
         }
 
@@ -359,6 +424,21 @@ class RSSController(BaseController):
         query = query.join(self.Category)
         query = query.filter(
             func.lower(self.Category.title) ==  category
+        )
+        entries = query.all()
+
+        return self.get_rss_data(entries)
+
+    @view_config(
+        route_name='hiero_entry_rss_tag'
+        , renderer='hiero:templates/rss.mako'
+    )
+    def rss_tag(self):
+        tag = func.lower(self.request.matchdict['tag'])
+        query = self.Entry.get_all_active(self.request)
+        query = query.join(self.Tag)
+        query = query.filter(
+            func.lower(self.Tag.title) ==  tag
         )
         entries = query.all()
 
