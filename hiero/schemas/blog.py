@@ -156,11 +156,11 @@ class EntryAdminSchema(CSRFSchema):
         , missing = None
     )
 
-    tags = colander.SchemaNode(
-        deform.Set(),
-        widget=tag_widget,
-#        default=language_default,
-        title='Tags')
+    #tags = colander.SchemaNode(
+    #    deform.Set(),
+    #    widget=tag_widget,
+#   #     default=language_default,
+    #    title='Tags')
 
     is_featured = colander.SchemaNode(
         colander.Boolean()
