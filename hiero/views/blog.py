@@ -187,8 +187,9 @@ class AdminEntryController(BaseController):
             saved_tags = []
 
             for tag in tags:
-                if str(tag.id) in captured['tags']:
-                    saved_tags.append(tag)
+                if captured['tags']:
+                    if str(tag.id) in captured['tags']:
+                        saved_tags.append(tag)
 
             entry.tags = saved_tags
 

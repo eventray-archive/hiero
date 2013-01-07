@@ -1,5 +1,3 @@
-<input type="hidden" name="__end__" value="${field.name}:sequence"
-  tal:condition="field.widget.multiple" />
 <div tal:define="name name|field.name;
                  oid oid|field.oid;
                  size size|field.widget.size;

@@ -114,7 +114,6 @@ def tag_widget(node, kw):
         , multiple = True
     )
 
-    print "CHOICES", choices
     widget.request = request
 
     return widget
@@ -173,10 +172,12 @@ class EntryAdminSchema(CSRFSchema):
     )
 
     tags = colander.SchemaNode(
-        deform.Set(),
+        colander.Set(),
         widget=tag_widget,
         default=tag_default,
-        title='Tags')
+        title='Tags',
+        missing = None
+    )
 
     is_featured = colander.SchemaNode(
         colander.Boolean()
