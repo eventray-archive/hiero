@@ -2,6 +2,7 @@ from horus.resources import RootFactory
 from hiero.interfaces   import IHieroEntryClass
 from hiero.interfaces   import IHieroCategoryClass
 from hiero.interfaces   import IHieroSeriesClass
+from hiero.interfaces   import IHieroTagClass
 
 class EntryFactory(RootFactory):
     def __init__(self, request):
@@ -30,6 +31,21 @@ class CategoryFactory(RootFactory):
             category.__name__ = key
 
         return category
+
+class TagFactory(RootFactory):
+    def __init__(self, request):
+        self.request = request
+        self.Tag = request.registry.getUtility(IHieroTagClass)
+
+    def __getitem__(self, key):
+        tag = self.Tag.get_by_title(self.request, key).one()
+
+        if tag:
+            tag.__parent__ = self
+            tag.__name__ = key
+
+        return tag
+
 
 class SeriesFactory(RootFactory):
     def __init__(self, request):

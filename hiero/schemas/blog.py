@@ -5,7 +5,6 @@ from horus.interfaces        import IUserClass
 from hiero.interfaces        import IHieroSeriesClass
 from hiero.interfaces        import IHieroCategoryClass
 from hiero.interfaces        import IHieroTagClass
-from deform_bootstrap.widget import ChosenMultipleWidget
 
 import colander
 import deform
@@ -107,10 +106,27 @@ def tag_widget(node, kw):
     tags = session.query(Tag).all()
 
     for tag in tags:
-        choices.append((str(tag.pk), tag.title))
+        choices.append((str(tag.id), tag.title))
 
-    return ChosenMultipleWidget(values=choices)
+    widget = deform.widget.SelectWidget(
+        values=choices
+        , template='hiero:templates/widgets/select_tags'
+        , multiple = True
+    )
 
+    print "CHOICES", choices
+    widget.request = request
+
+    return widget
+
+@colander.deferred
+def tag_default(node, kw):
+    request = kw.get('request')
+
+    if request.context.tags:
+        tags = [str(tag.id) for tag in request.context.tags]
+
+        return tuple(tags)
 
 
 class EntryAdminSchema(CSRFSchema):
@@ -156,11 +172,11 @@ class EntryAdminSchema(CSRFSchema):
         , missing = None
     )
 
-    #tags = colander.SchemaNode(
-    #    deform.Set(),
-    #    widget=tag_widget,
-#   #     default=language_default,
-    #    title='Tags')
+    tags = colander.SchemaNode(
+        deform.Set(),
+        widget=tag_widget,
+        default=tag_default,
+        title='Tags')
 
     is_featured = colander.SchemaNode(
         colander.Boolean()
@@ -203,4 +219,9 @@ class SeriesAdminSchema(CSRFSchema):
         colander.String()
         , validator=colander.Length(max=128)
         , missing = None
+    )
+
+class TagAdminSchema(CSRFSchema):
+    title = colander.SchemaNode(colander.String(),
+        validator=colander.Length(max=128)
     )

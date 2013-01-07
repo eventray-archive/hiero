@@ -9,5 +9,8 @@ class IHieroSeriesClass(Interface):
 class IHieroCategoryClass(Interface):
     pass
 
+class IHieroEntryTagClass(Interface):
+    pass
+
 class IHieroTagClass(Interface):
     pass

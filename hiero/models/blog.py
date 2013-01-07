@@ -72,6 +72,14 @@ class TagMixin(BaseModel):
         """ Unique title for the tag """
         return sa.Column(sa.Unicode(128), nullable=False, unique=True)
 
+    @classmethod
+    def get_by_title(cls, request, title):
+        """Gets a tag by its title """
+        session = get_session(request)
+
+        return session.query(cls).filter(cls.title == title)
+
+
 class CategoryMixin(BaseModel):
     @declared_attr
     def title(self):

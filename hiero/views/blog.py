@@ -2,6 +2,7 @@ from hiero.views                import BaseController
 from hiero.schemas.blog         import EntryAdminSchema
 from hiero.schemas.blog         import CategoryAdminSchema
 from hiero.schemas.blog         import SeriesAdminSchema
+from hiero.schemas.blog         import TagAdminSchema
 from hiero.forms                import HieroForm
 from hiero.formatters           import get_formatter
 from horus.resources            import RootFactory
@@ -154,10 +155,14 @@ class AdminEntryController(BaseController):
             if isinstance(self.request.context, RootFactory):
                 return dict(form=form)
             else:
+                appstruct = self.request.context.__json__(self.request,
+                    convert_date=False)
+
+                appstruct['tags'] = [str(t.id) for t in appstruct['tags']]
+
                 return dict(
                     form=form,
-                    appstruct = self.request.context.__json__(self.request,
-                        convert_date=False)
+                    appstruct=appstruct
                 )
         else:
             try:
@@ -176,6 +181,16 @@ class AdminEntryController(BaseController):
             entry.owner_id = captured['owner']
             entry.content = captured['content']
             entry.markup = captured['markup']
+
+            tags = self.session.query(self.Tag).all()
+
+            saved_tags = []
+
+            for tag in tags:
+                if str(tag.id) in captured['tags']:
+                    saved_tags.append(tag)
+
+            entry.tags = saved_tags
 
             formatter = get_formatter(captured['markup'])
 
@@ -240,7 +255,7 @@ class AdminEntryController(BaseController):
             else:
                 return dict(
                     form=form,
-                    appstruct = self.request.context.__json__()
+                    appstruct = self.request.context.__json__(self.request)
                 )
         else:
             try:
@@ -268,55 +283,65 @@ class AdminEntryController(BaseController):
                 location=self.request.route_url('hiero_admin_category_index')
             )
 
-#    @view_config(
-#            route_name='hiero_admin_tag_create'
-#            , renderer='hiero:templates/admin/edit_tag.mako'
-#    )
-#    @view_config(
-#            route_name='hiero_admin_tag_edit'
-#            , renderer='hiero:templates/admin/edit_tag.mako'
-#    )
-#    def create_tag(self):
-#        schema = TagAdminSchema()
-#        schema = schema.bind(request=self.request)
-#        form = HieroForm(self.request, schema)
-#
-#        if self.request.method == 'GET':
-#            if isinstance(self.request.context, RootFactory):
-#                return dict(form=form)
-#            else:
-#                return dict(
-#                    form=form,
-#                    appstruct = self.request.context.__json__()
-#                )
-#        else:
-#            try:
-#                controls = self.request.POST.items()
-#                captured = form.validate(controls)
-#            except deform.ValidationFailure, e:
-#                return dict(form=e, errors=e.error.children)
-#
-#
-#            if isinstance(self.request.context, RootFactory):
-#                category = self.Category()
-#            else:
-#                category = self.request.context
-#
-#            category.title = captured['title']
-#
-#            if captured['slug']:
-#                category.slug = captured['slug']
-#
-#            self.session.add(category)
-#
-#            self.request.session.flash(_(u'The category was created'), 'success')
-#
-#            return HTTPFound(
-#                location=self.request.route_url('hiero_admin_category_index')
-#            )
-#
-#
-#
+    @view_config(
+            route_name='hiero_admin_tag_index'
+            , renderer='hiero:templates/admin/tag_index.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_tag_index_paged'
+            , renderer='hiero:templates/admin/tag_index.mako'
+    )
+    def tag_index(self):
+        page = int(self.request.matchdict.get('page', 1))
+
+        query = self.Tag.get_all(self.request, page=page)
+
+        return dict(tags=query.all())
+
+    @view_config(
+            route_name='hiero_admin_tag_create'
+            , renderer='hiero:templates/admin/edit_tag.mako'
+    )
+    @view_config(
+            route_name='hiero_admin_tag_edit'
+            , renderer='hiero:templates/admin/edit_tag.mako'
+    )
+    def create_tag(self):
+        schema = TagAdminSchema()
+        schema = schema.bind(request=self.request)
+        form = HieroForm(self.request, schema)
+
+        if self.request.method == 'GET':
+            if isinstance(self.request.context, RootFactory):
+                return dict(form=form)
+            else:
+                return dict(
+                    form=form,
+                    appstruct = self.request.context.__json__(self.request)
+                )
+        else:
+            try:
+                controls = self.request.POST.items()
+                captured = form.validate(controls)
+            except deform.ValidationFailure, e:
+                return dict(form=e, errors=e.error.children)
+
+
+            if isinstance(self.request.context, RootFactory):
+                tag = self.Tag()
+            else:
+                tag = self.request.context
+
+            tag.title = captured['title']
+
+            self.session.add(tag)
+
+            self.request.session.flash(_(u'The tag was created'), 'success')
+
+            return HTTPFound(
+                location=self.request.route_url('hiero_admin_tag_index')
+            )
+
 
     @view_config(
             route_name='hiero_admin_series_index'
@@ -352,7 +377,7 @@ class AdminEntryController(BaseController):
             else:
                 return dict(
                     form=form,
-                    appstruct = self.request.context.__json__()
+                    appstruct = self.request.context.__json__(self.request)
                 )
         else:
             try:
@@ -406,6 +431,7 @@ class RSSController(BaseController):
     @view_config(
         route_name='hiero_entry_rss'
         , renderer='hiero:templates/rss.mako'
+        , custom_predicates = (rss_content_type,)
     )
     def rss(self):
         query = self.Entry.get_all_active(self.request)
@@ -417,6 +443,7 @@ class RSSController(BaseController):
     @view_config(
         route_name='hiero_entry_rss_category'
         , renderer='hiero:templates/rss.mako'
+        , custom_predicates = (rss_content_type,)
     )
     def rss_category(self):
         category = func.lower(self.request.matchdict['category'])
@@ -432,11 +459,22 @@ class RSSController(BaseController):
     @view_config(
         route_name='hiero_entry_rss_tag'
         , renderer='hiero:templates/rss.mako'
+        , custom_predicates = (rss_content_type,)
     )
     def rss_tag(self):
+        """
+        SELECT entry_tag.title
+        FROM entry 
+        JOIN entry_tag_association on entry.id = entry_tag_association.entry_id 
+        JOIN entry_tag on entry_tag.id = entry_tag_association.tag_id;
+        """
         tag = func.lower(self.request.matchdict['tag'])
         query = self.Entry.get_all_active(self.request)
-        query = query.join(self.Tag)
+        query = query.join(self.EntryTag)
+        query = query.join(
+            self.Tag
+            , self.EntryTag.tag_id == self.Tag.id
+        )
         query = query.filter(
             func.lower(self.Tag.title) ==  tag
         )

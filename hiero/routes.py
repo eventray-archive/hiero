@@ -1,5 +1,6 @@
 from hiero.resources    import EntryFactory
 from hiero.resources    import CategoryFactory
+from hiero.resources    import TagFactory
 from hiero.resources    import SeriesFactory
 
 def includeme(config):
@@ -12,18 +13,27 @@ def includeme(config):
     config.add_route('hiero_entry_series',       '/series/{slug}')
     config.add_route('hiero_entry_rss',          '/rss/index.rss')
     config.add_route('hiero_entry_rss_category', '/rss/category/{category}.rss')
-    config.add_route('hiero_entry_rss_tag',      '/rss/tag/{category}.rss')
+    config.add_route('hiero_entry_rss_tag',      '/rss/tag/{tag}.rss')
 
     # admin routes
     config.add_route('hiero_admin_index',   '/admin')
     config.add_route('hiero_admin_entry_index_paged',   '/admin/entries/page/{page}')
     config.add_route('hiero_admin_entry_index',   '/admin/entries')
     config.add_route('hiero_admin_entry_create',   '/admin/entries/new')
-    config.add_route('hiero_admin_tag_create',   '/admin/tags/new')
     config.add_route('hiero_admin_entry_edit'
            , '/admin/entries/{slug}/edit'
            , factory=EntryFactory
            , traverse="/{slug}"
+    )
+
+    config.add_route('hiero_admin_tag_index_paged',
+            '/admin/tags/page/{page}')
+    config.add_route('hiero_admin_tag_index',   '/admin/tags')
+    config.add_route('hiero_admin_tag_create',   '/admin/tags/new')
+    config.add_route('hiero_admin_tag_edit'
+           , '/admin/categories/{tag}/edit'
+           , factory=TagFactory
+           , traverse="/{tag}"
     )
 
     config.add_route('hiero_admin_category_index_paged',

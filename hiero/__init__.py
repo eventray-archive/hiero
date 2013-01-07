@@ -2,6 +2,7 @@ from hiero.interfaces   import IHieroEntryClass
 from hiero.interfaces   import IHieroSeriesClass
 from hiero.interfaces   import IHieroCategoryClass
 from hiero.interfaces   import IHieroTagClass
+from hiero.interfaces   import IHieroEntryTagClass
 
 from hem.config         import get_class_from_config
 
@@ -23,6 +24,11 @@ def includeme(config):
     if not config.registry.queryUtility(IHieroTagClass):
         cat_class = get_class_from_config(settings, 'hiero.tag_class')
         config.registry.registerUtility(cat_class, IHieroTagClass)
+
+    if not config.registry.queryUtility(IHieroEntryTagClass):
+        cat_class = get_class_from_config(settings, 'hiero.entry_tag_class')
+        config.registry.registerUtility(cat_class, IHieroEntryTagClass)
+
 
     config.include('hiero.routes')
 
