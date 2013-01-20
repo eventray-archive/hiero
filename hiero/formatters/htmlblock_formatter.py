@@ -1,7 +1,6 @@
-import re
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name, guess_lexer
+from pygments.lexers import get_lexer_by_name
 from BeautifulSoup import BeautifulSoup
 
 class HtmlCodeBlockFormatter(object):
@@ -76,6 +75,7 @@ class HtmlCodeBlockFormatter(object):
     def post_parse(self):
         # Replace all the empty code blocks with the syntax highlighted html
         empty_code_blocks = self.soup.findAll('code', 'removed')
+
         for index, escaped_block in enumerate(self.escaped_blocks):
             empty_code_blocks[index].replaceWith(escaped_block)
 

@@ -37,6 +37,8 @@ def get_formatter(formatter_class):
         cls = 'RestructuredTextFormatter'
     elif formatter_class == 'markdown':
         cls = 'MarkdownFormatter'
+    else:
+        cls = formatter_class
 
     load_modules()
     current_module = sys.modules[__name__]
