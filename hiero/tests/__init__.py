@@ -11,10 +11,14 @@ from hem.interfaces         import IDBSession
 from horus.interfaces       import IUserClass
 from horus.interfaces       import IActivationClass
 from hiero.interfaces       import IHieroEntryClass
+from hiero.interfaces       import IHieroEntryTagClass
+from hiero.interfaces       import IHieroTagClass
 from hiero.tests.models     import Base
 from hiero.tests.models     import User
 from hiero.tests.models     import Activation
 from hiero.tests.models     import Entry
+from hiero.tests.models     import EntryTag
+from hiero.tests.models     import Tag
 from pyramid_beaker         import session_factory_from_settings
 from webtest                import TestApp
 
@@ -44,6 +48,8 @@ class BaseTestCase(unittest.TestCase):
         self.config.registry.registerUtility(Activation, IActivationClass)
         self.config.registry.registerUtility(User, IUserClass)
         self.config.registry.registerUtility(Entry, IHieroEntryClass)
+        self.config.registry.registerUtility(EntryTag, IHieroEntryTagClass)
+        self.config.registry.registerUtility(Tag, IHieroTagClass)
 
         Base.metadata.bind=connection
 

@@ -25,7 +25,7 @@
             &nbsp;
             <!-- this div keeps the content centered -->
           </div>
-          <div class="span4">
+          <div class="span8">
             ${next.body()}
         </div>
       </div> <!-- /container -->
