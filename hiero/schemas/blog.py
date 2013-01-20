@@ -122,10 +122,11 @@ def tag_widget(node, kw):
 def tag_default(node, kw):
     request = kw.get('request')
 
-    if request.context.tags:
-        tags = [str(tag.id) for tag in request.context.tags]
+    if not isinstance(request.context, RootFactory):
+        if request.context.tags:
+            tags = [str(tag.id) for tag in request.context.tags]
 
-        return tuple(tags)
+            return tuple(tags)
 
 
 class EntryAdminSchema(CSRFSchema):
