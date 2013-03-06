@@ -60,9 +60,11 @@ class EntryController(BaseController):
         query = self.Entry.get_all_active(self.request, page=page)
         query = query.join(self.Category)
         query = query.filter(self.Category.slug == slug)
+        category = self.session.query(self.Category).filter(slug == slug).one()
 
         return {
-            'entries': query.all()
+            'category': category
+            , 'entries': query.all()
             , 'page': page
         }
 
