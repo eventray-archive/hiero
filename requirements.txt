@@ -1,0 +1,14 @@
+pyramid
+pyramid_debugtoolbar
+pyramid_mako
+pyramid_tm
+waitress
+horus
+celementtree
+sqlalchemy
+psycopg2
+BeautifulSoup
+markdown
+docutils
+hem
+horus

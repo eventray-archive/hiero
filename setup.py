@@ -19,21 +19,11 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = [
-    'pyramid'
-    , 'pyramid_debugtoolbar'
-    , 'pyramid_tm'
-    , 'waitress'
-    , 'horus'
-    , 'celementtree'
-    , 'sqlalchemy'
-    , 'psycopg2'
-    , 'BeautifulSoup'
-    , 'markdown'
-    , 'docutils'
-    , 'hem'
-    , 'horus'
-]
+with open('requirements.txt') as r:
+    requires = r.readlines()
+
+with open('test-requirements.txt') as r:
+    test_requires = r.readlines()
 
 setup(
     name='hiero'
@@ -55,7 +45,7 @@ setup(
     , zip_safe=False
     , install_requires=requires
     , cmdclass = {'test': PyTest}
-    , tests_require=requires + ['pytest', 'mock', 'webtest']
+    , tests_require=requires + test_requires
     , test_suite="hiero"
     , entry_points = """\
     [paste.app_factory]
